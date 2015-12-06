@@ -7,7 +7,7 @@ export default function client() {
   const initialProps = JSON.parse(document.getElementById('initial-data').innerHTML)
   ReactDOM.render(<App />, document.getElementById('app'))
 
-  const tracks = [require('../songs/sin-lead')]
+  const tracks = [require('../songs/still-alive/sin-lead')]
   Promise.all(tracks.map(module => module.default()))
    .then(loadedTracks => {
     fetch(require('../songs/still-alive/still-alive.mid'))

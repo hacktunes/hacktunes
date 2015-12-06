@@ -1,0 +1,34 @@
+{
+  "name": "hacktunes",
+  "version": "0.0.1",
+  "description": "a generated music collaboration",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint ./index.js site",
+    "build": "webpack -p --progress",
+    "dev": "webpack-dev-server --watch-poll --host 0.0.0.0",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "isomorphic-fetch": "~2.2.0",
+    "react": "~0.14.3",
+    "react-dom": "~0.14.3",
+    "midifile": "~1.0.2",
+    "midievents": "~1.0.0",
+    "midiplayer": "~0.0.2"
+  },
+  "devDependencies": {
+    "babel-core": "~6.3.13",
+    "babel-preset-es2015": "~6.3.13",
+    "babel-preset-react": "~6.3.13",
+    "babel-plugin-transform-object-rest-spread": "~6.3.13",
+    "babel-loader": "~6.2.0",
+    "webpack": "~1.12.0",
+    "webpack-dev-server": "~1.14.0",
+    "file-loader": "~0.8.5",
+    "static-site-generator-webpack-plugin": "~1.3.0",
+    "eslint": "~1.10.3",
+    "eslint-plugin-react": "~3.11.2",
+    "eslint-config-airbnb": "~2.0.0"
+  }
+}

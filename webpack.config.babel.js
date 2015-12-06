@@ -23,6 +23,10 @@ const config = {
         loader: 'babel',
       },
       {
+        test: /\.json$/,
+        loader: 'json',
+      },
+      {
         test: /\/static\/favicon\.png$/,
         loader: 'file?name=[name].[ext]',
       },

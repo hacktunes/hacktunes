@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom'
 import App from './components/App'
 import Player from './Player'
 
+const metaData = require('../meta/data.json')
+
 export default function client() {
   const initialProps = JSON.parse(document.getElementById('initial-data').innerHTML)
   ReactDOM.render(<App />, document.getElementById('app'))

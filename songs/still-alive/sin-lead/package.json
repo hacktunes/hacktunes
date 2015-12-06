@@ -1,0 +1,10 @@
+{
+  "name": "Sin Lead",
+  "version": "0.0.1",
+  "description": "a really basic sin oscillator",
+  "main": "index.js",
+  "author": {
+    "name": "chromakode",
+    "email": "c@chromakode.com"
+  }
+}

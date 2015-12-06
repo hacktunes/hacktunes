@@ -12,7 +12,7 @@ const config = {
   },
 
   externals: [
-    'react-dom/server',
+    './site/server',
   ],
 
   module: {

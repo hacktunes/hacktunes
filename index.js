@@ -3,8 +3,11 @@ import { Provider } from 'react-redux'
 import renderStaticPage from './site/server'
 import configureStore from './site/store/configureStore'
 import App from './site/containers/App'
+import initSongs from './site/initSongs'
 
 const store = configureStore()
+
+initSongs(store)
 
 const view = (
   <Provider store={store}>

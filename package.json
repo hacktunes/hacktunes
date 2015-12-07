@@ -7,7 +7,7 @@
     "lint": "eslint ./index.js site",
     "update-metadata": "babel-node ./scripts/updateMetadata",
     "build": "npm run update-metadata && webpack -p --progress",
-    "dev": "npm run update-metadata && webpack-dev-server --hot --watch-poll --host 0.0.0.0",
+    "dev": "webpack-dev-server --hot --watch-poll --host 0.0.0.0",
     "start": "npm run dev"
   },
   "dependencies": {

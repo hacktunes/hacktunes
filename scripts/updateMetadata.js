@@ -11,19 +11,21 @@ if (!fs.existsSync(metaDir)) {
   fs.mkdirSync(metaDir)
 }
 
-const metaData = require(path.join(baseDir, 'songs/about.json'))
+const metaData = require(path.join(baseDir, 'songs/info.json'))
 
 metaData.songs = metaData.songs || {}
 
-const songInfos = glob.sync(path.join(baseDir, 'songs', '*/about.json'))
+const songInfos = glob.sync(path.join(baseDir, 'songs', '*/song.json'))
 songInfos.forEach(filename => {
   const parts = filename.split('/')
   const songKey = parts[parts.length - 2]
   const info = require(filename)
-  metaData.songs[songKey] = {info, tracks: []}
+  metaData.songs[songKey] = {info, tracks: {}}
 
   const trackInfos = glob.sync(path.join(baseDir, 'songs', songKey, '*/package.json'))
   trackInfos.forEach(filename => {
+    const parts = filename.split('/')
+    const trackKey = parts[parts.length - 2]
     const info = require(filename)
     const authorEmail = info.author && info.author.email
     if (!authorEmail) {
@@ -38,7 +40,7 @@ songInfos.forEach(filename => {
       https.get(avatarURL, response => response.pipe(avatarFile))
     }
 
-    metaData.songs[songKey].tracks.push(info)
+    metaData.songs[songKey].tracks[trackKey] = info
   })
 })
 

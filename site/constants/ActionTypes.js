@@ -1,2 +1,3 @@
+export const SONGS_LOADED = 'SONGS_LOADED'
 export const START_PLAYBACK = 'START_PLAYBACK'
 export const PAUSE_PLAYBACK = 'PAUSE_PLAYBACK'

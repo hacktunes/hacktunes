@@ -5,13 +5,18 @@ import * as PlaybackActions from '../actions/playback'
 
 class App extends Component {
   render() {
-    const { playback, actions } = this.props
+    const { playback, songs, actions } = this.props
+
+    const tracks = songs.songs[songs.current].tracks
     return (
       <div>
         <button onClick={actions.startPlayback}>play</button>
         <button onClick={actions.pausePlayback}>pause</button>
         hiiiii ...!!!
         {playback.startTime}
+        {Object.keys(tracks).map(trackKey => {
+          return <div key={trackKey}>{JSON.stringify(tracks[trackKey])}</div>
+        })}
       </div>
     )
   }
@@ -22,7 +27,8 @@ App.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    playback: state.playback
+    playback: state.playback,
+    songs: state.songs,
   }
 }
 

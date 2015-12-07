@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import Player from './Player'
 
-const metaData = require('../meta/data.json')
 
 export default function client(store, view) {
   if (process.env.NODE_ENV !== 'production') {

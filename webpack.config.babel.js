@@ -15,12 +15,14 @@ const config = {
     './site/server',
   ],
 
+  devtool: 'cheap-module-source-map',
+
   module: {
     loaders: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel',
+        loaders: ['react-hot', 'babel'],
       },
       {
         test: /\.json$/,

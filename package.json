@@ -7,13 +7,15 @@
     "lint": "eslint ./index.js site",
     "update-metadata": "babel-node ./scripts/updateMetadata",
     "build": "npm run update-metadata && webpack -p --progress",
-    "dev": "npm run update-metadata && webpack-dev-server --watch-poll --host 0.0.0.0",
+    "dev": "npm run update-metadata && webpack-dev-server --hot --watch-poll --host 0.0.0.0",
     "start": "npm run dev"
   },
   "dependencies": {
     "isomorphic-fetch": "~2.2.0",
     "react": "~0.14.3",
     "react-dom": "~0.14.3",
+    "redux": "~3.0.4",
+    "react-redux": "~4.0.0",
     "midifile": "~1.0.2",
     "midievents": "~1.0.0",
     "midiplayer": "~0.0.2"

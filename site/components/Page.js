@@ -13,7 +13,6 @@ export default function Page({title, html, initialData, scriptHash}) {
       </head>
       <body>
         <div id="app" dangerouslySetInnerHTML={html} />
-        <script id="initial-data" type="application/json" dangerouslySetInnerHTML={json} />
         <script src={'/main.' + scriptHash + '.js'} />
       </body>
     </html>
@@ -23,6 +22,5 @@ export default function Page({title, html, initialData, scriptHash}) {
 Page.propTypes = {
   title: React.PropTypes.string.isRequired,
   html: React.PropTypes.object.isRequired,
-  initialData: React.PropTypes.object.isRequired,
   scriptHash: React.PropTypes.string.isRequired,
 }

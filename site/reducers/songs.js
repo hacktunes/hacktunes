@@ -5,7 +5,7 @@ import {
 export default function song(state = {}, action) {
   switch (action.type) {
     case SONGS_LOADED:
-      return action.songs
+      return Object.assign({}, action.songs)
     default:
       return state
   }

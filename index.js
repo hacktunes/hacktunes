@@ -4,10 +4,12 @@ import renderStaticPage from './site/server'
 import configureStore from './site/store/configureStore'
 import App from './site/containers/App'
 import initSongs from './site/initSongs'
+import initTracks from './site/initTracks'
 
 const store = configureStore()
 
 initSongs(store)
+initTracks(store)
 
 const view = (
   <Provider store={store}>

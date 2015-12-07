@@ -9,20 +9,33 @@ import MIDIFile from 'midifile'
 import MIDIPlayer from 'midiplayer'
 
 export default class Player {
-  constructor(buffer, tracks) {
+  constructor(buffer) {
     this.midiFile = new MIDIFile(buffer)
     this.midiPlayer = new MIDIPlayer({
       output: {send: this._handleMIDIEvent.bind(this)},
     })
     this.midiPlayer.load(this.midiFile)
-    this.tracks = tracks
     this.ctx = new AudioContext()
-    this.trackGains = tracks.map(() => {
-      const gain = this.ctx.createGain()
-      gain.connect(this.ctx.destination)
-      return gain
-    })
+    this.tracks = new Map()
+    this.trackGains = new Map()
     window.ctx = this.ctx
+  }
+
+  setTracks(tracks) {
+    for (let [trackKey, track] of this.tracks) {
+      if (!tracks.has(trackKey) || track !== tracks.get(trackKey)) {
+        this.trackGains.get(trackKey).disconnect()
+        this.trackGains.delete(trackKey)
+      }
+    }
+    for (let [trackKey, track] of tracks) {
+      if (!this.trackGains.has(trackKey)) {
+        const gain = this.ctx.createGain()
+        gain.connect(this.ctx.destination)
+        this.trackGains.set(trackKey, gain)
+      }
+    }
+    this.tracks = tracks
   }
 
   play() {
@@ -50,6 +63,8 @@ export default class Player {
       ev.frequency = Math.pow(2, (ev.note - 69) / 12) * 440
     }
 
-    this.tracks.forEach((track, idx) => track(ev, this.ctx, this.trackGains[idx]))
+    for (let [trackKey, track] of this.tracks) {
+      track(ev, this.ctx, this.trackGains.get(trackKey))
+    }
   }
 }

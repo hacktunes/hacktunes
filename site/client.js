@@ -14,14 +14,18 @@ export default function client(store, view) {
 
   ReactDOM.render(view, document.getElementById('app'))
 
-  const tracks = [require('../songs/still-alive/sin-lead')]
-  Promise.all(tracks.map(module => module.default()))
-   .then(loadedTracks => {
-    fetch(require('../songs/still-alive/still-alive.mid'))
-      .then(response => response.arrayBuffer())
-      .then(buffer => {
-        let player = new Player(buffer, loadedTracks)
-        //player.play()
-      })
-   })
+  fetch(require('../songs/still-alive/still-alive.mid'))
+    .then(response => response.arrayBuffer())
+    .then(buffer => {
+      let player = new Player(buffer)
+
+      function updatePlayer() {
+        const state = store.getState()
+        player.setTracks(state.tracks[state.songs.current])
+      }
+
+      store.subscribe(updatePlayer)
+      updatePlayer()
+      player.play()
+    })
 }

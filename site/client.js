@@ -12,7 +12,7 @@ export default function client(store, view) {
     require('webpack/hot/dev-server')
   }
 
-  ReactDOM.render(view, document.getElementById('app'))
+  const ui = ReactDOM.render(view, document.getElementById('app'))
 
   fetch(require('../songs/still-alive/still-alive.mid'))
     .then(response => response.arrayBuffer())
@@ -28,4 +28,6 @@ export default function client(store, view) {
       updatePlayer()
       player.play()
     })
+
+  window.hacktunes = { store, ui }
 }

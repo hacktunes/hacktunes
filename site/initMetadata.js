@@ -1,6 +1,6 @@
-import { songsLoaded } from './actions/songs'
+import { metadataLoaded } from './actions/metadata'
 
-function loadSongs(store) {
+function loadMetadata(store) {
   const songRequire = require.context('../songs/', true, /(info|song|package)\.json$/)
   const metaData = songRequire('./info.json')
   metaData.songs = {}
@@ -22,16 +22,16 @@ function loadSongs(store) {
       metaData.songs[songKey].tracks[trackKey] = songRequire(name)
     }
   })
-  store.dispatch(songsLoaded(metaData))
+  store.dispatch(metadataLoaded(metaData))
   return songRequire
 }
 
-export default function initSongs(store) {
-  const songRequire = loadSongs(store)
+export default function initMetadata(store) {
+  const songRequire = loadMetadata(store)
 
   if (module.hot) {
     module.hot.accept(songRequire.id, () => {
-      loadSongs(store)
+      loadMetadata(store)
     })
   }
 }

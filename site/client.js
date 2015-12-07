@@ -21,7 +21,7 @@ export default function client(store, view) {
 
       function updatePlayer() {
         const state = store.getState()
-        player.setTracks(state.tracks[state.songs.current])
+        player.setTracks(state.tracks[state.metadata.current])
       }
 
       store.subscribe(updatePlayer)

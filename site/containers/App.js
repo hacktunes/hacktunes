@@ -5,9 +5,9 @@ import * as PlaybackActions from '../actions/playback'
 
 class App extends Component {
   render() {
-    const { playback, songs, actions } = this.props
+    const { playback, metadata, actions } = this.props
 
-    const tracks = songs.songs[songs.current].tracks
+    const tracks = metadata.songs[metadata.current].tracks
     return (
       <div>
         <button onClick={actions.startPlayback}>play</button>
@@ -28,7 +28,7 @@ App.propTypes = {
 function mapStateToProps(state) {
   return {
     playback: state.playback,
-    songs: state.songs,
+    metadata: state.metadata,
   }
 }
 

@@ -8,7 +8,7 @@ const initialState = {
   pauseTime: null,
 }
 
-export default function song(state = initialState, action) {
+export default function playback(state = initialState, action) {
   switch (action.type) {
     case START_PLAYBACK:
       return Object.assign({}, state, {

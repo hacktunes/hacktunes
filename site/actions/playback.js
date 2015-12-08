@@ -1,4 +1,4 @@
-import * as types from '../constants/ActionTypes'
+import * as types from '../constants/actionTypes'
 
 export function startPlayback() {
   return { type: types.START_PLAYBACK }

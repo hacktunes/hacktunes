@@ -1,7 +1,7 @@
 import Immutable from 'immutable'
 import {
   METADATA_LOADED,
-} from '../constants/ActionTypes'
+} from '../constants/actionTypes'
 
 const StateRecord = Immutable.Record({
   current: null,

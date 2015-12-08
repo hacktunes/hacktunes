@@ -2,7 +2,7 @@ import Immutable from 'immutable'
 import {
   START_PLAYBACK,
   PAUSE_PLAYBACK,
-} from '../constants/ActionTypes'
+} from '../constants/actionTypes'
 
 const StateRecord = Immutable.Record({
   startTime: null,

@@ -1,7 +1,7 @@
 import Immutable from 'immutable'
 import {
   TRACK_LOADED,
-} from '../constants/ActionTypes'
+} from '../constants/actionTypes'
 
 export default function tracks(state = Immutable.Map(), action) {
   switch (action.type) {

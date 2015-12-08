@@ -1,6 +1,6 @@
 import Immutable from 'immutable'
 import {
-  METADATA_LOADED,
+  SET_METADATA,
 } from '../constants/actionTypes'
 
 const StateRecord = Immutable.Record({
@@ -10,7 +10,7 @@ const StateRecord = Immutable.Record({
 
 export default function metadata(state = StateRecord(), action) {
   switch (action.type) {
-    case METADATA_LOADED:
+    case SET_METADATA:
       return StateRecord(action.metadata)
     default:
       return state

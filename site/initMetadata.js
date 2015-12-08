@@ -1,4 +1,4 @@
-import { metadataLoaded } from './actions/metadata'
+import { setMetadata } from './actions/metadata'
 
 function loadMetadata(store) {
   const songRequire = require.context('../songs/', true, /(info|song|package)\.json$/)
@@ -22,7 +22,7 @@ function loadMetadata(store) {
       metaData.songs[songKey].tracks[trackKey] = songRequire(name)
     }
   })
-  store.dispatch(metadataLoaded(metaData))
+  store.dispatch(setMetadata(metaData))
   return songRequire
 }
 

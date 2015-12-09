@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Player from './Player'
-
+import { fetchSong } from './actions/player'
 
 export default function client(store, view) {
   if (process.env.NODE_ENV !== 'production') {
@@ -14,20 +13,7 @@ export default function client(store, view) {
 
   const ui = ReactDOM.render(view, document.getElementById('app'))
 
-  fetch(require('../songs/still-alive/still-alive.mid'))
-    .then(response => response.arrayBuffer())
-    .then(buffer => {
-      let player = new Player(buffer)
-
-      function updatePlayer() {
-        const state = store.getState()
-        player.setTracks(state.tracks.get(state.metadata.current))
-      }
-
-      store.subscribe(updatePlayer)
-      updatePlayer()
-      player.play()
-    })
+  store.dispatch(fetchSong(store.getState().metadata.current))
 
   window.hacktunes = { store, ui }
 }

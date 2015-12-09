@@ -1,12 +1,10 @@
 import { combineReducers } from 'redux'
-import playback from './playback'
 import metadata from './metadata'
-import tracks from './tracks'
+import player from './player'
 
 const rootReducer = combineReducers({
-  playback,
   metadata,
-  tracks,
+  player,
 })
 
 export default rootReducer

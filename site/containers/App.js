@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import * as PlaybackActions from '../actions/playback'
+import * as PlayerActions from '../actions/player'
 
 class App extends Component {
   render() {
-    const { playback, metadata, actions } = this.props
+    const { metadata, player, actions } = this.props
 
     const tracks = metadata.songs[metadata.current].tracks
     return (
@@ -13,9 +13,9 @@ class App extends Component {
         <button onClick={actions.startPlayback}>play</button>
         <button onClick={actions.pausePlayback}>pause</button>
         hiiiii ...!!!
-        {playback.startTime}
+        {player.startTime}
         {Object.keys(tracks).map(trackKey => {
-          return <div key={trackKey}>{JSON.stringify(tracks[trackKey])}</div>
+          return <div key={trackKey}>{JSON.stringify(tracks[trackKey])} {JSON.stringify(player.tracks.get(metadata.current))}</div>
         })}
       </div>
     )
@@ -27,14 +27,14 @@ App.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    playback: state.playback,
     metadata: state.metadata,
+    player: state.player,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(PlaybackActions, dispatch)
+    actions: bindActionCreators(PlayerActions, dispatch)
   }
 }
 

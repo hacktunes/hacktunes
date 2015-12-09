@@ -16,6 +16,7 @@
     "react": "~0.14.3",
     "react-dom": "~0.14.3",
     "redux": "~3.0.4",
+    "redux-thunk": "~1.0.0",
     "react-redux": "~4.0.0",
     "midifile": "~1.0.2",
     "midievents": "~1.0.0",

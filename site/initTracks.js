@@ -1,9 +1,9 @@
-import { trackLoaded } from './actions/tracks'
-
-const seenModules = {}
+import {
+  setTrack,
+} from './actions/player'
 
 function loadTracks(store) {
-  const state = store.getState().tracks
+  const state = store.getState().player.tracks
 
   const trackRequire = require.context('../songs/', true, /index.js$/)
   trackRequire.keys().forEach(name => {
@@ -11,11 +11,9 @@ function loadTracks(store) {
     const songKey = parts[1]
     const trackKey = parts[2]
     const trackModule = trackRequire(name)
-    if (trackModule !== seenModules[name]) {
-      seenModules[name] = trackModule
-      Promise.all([trackModule.default()]).then(([track]) =>
-        store.dispatch(trackLoaded(songKey, trackKey, track))
-      )
+    if (trackModule !== state.getIn([songKey, trackKey, 'module'])) {
+      store.dispatch(setTrack(songKey, trackKey, trackModule))
+      // FIXME: re-fetch?
     }
   })
   return trackRequire

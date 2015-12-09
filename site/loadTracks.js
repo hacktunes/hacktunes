@@ -1,6 +1,4 @@
-import {
-  setTrack,
-} from './actions/player'
+import { setTrack } from './actions/player'
 
 function _loadTracks(store) {
   const state = store.getState().player.tracks

@@ -2,7 +2,7 @@ import {
   setTrack,
 } from './actions/player'
 
-function loadTracks(store) {
+function _loadTracks(store) {
   const state = store.getState().player.tracks
 
   const trackRequire = require.context('../songs/', true, /index.js$/)
@@ -19,8 +19,8 @@ function loadTracks(store) {
   return trackRequire
 }
 
-export default function initTracks(store) {
-  const trackRequire = loadTracks(store)
+export default function loadTracks(store) {
+  const trackRequire = _loadTracks(store)
 
   if (module.hot) {
     module.hot.accept(trackRequire.id, () => {

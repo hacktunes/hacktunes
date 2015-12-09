@@ -1,6 +1,6 @@
 import { setMetadata } from './actions/metadata'
 
-function loadMetadata(store) {
+function _loadMetadata(store) {
   const songRequire = require.context('../songs/', true, /(info|song|package)\.json$/)
   const metaData = songRequire('./info.json')
   metaData.songs = {}
@@ -26,8 +26,8 @@ function loadMetadata(store) {
   return songRequire
 }
 
-export default function initMetadata(store) {
-  const songRequire = loadMetadata(store)
+export default function loadMetadata(store) {
+  const songRequire = _loadMetadata(store)
 
   if (module.hot) {
     module.hot.accept(songRequire.id, () => {

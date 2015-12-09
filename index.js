@@ -3,13 +3,13 @@ import { Provider } from 'react-redux'
 import renderStaticPage from './site/server'
 import configureStore from './site/store/configureStore'
 import App from './site/containers/App'
-import initMetadata from './site/initMetadata'
-import initTracks from './site/initTracks'
+import loadMetadata from './site/loadMetadata'
+import loadTracks from './site/loadTracks'
 
 const store = configureStore()
 
-initMetadata(store)
-initTracks(store)
+loadMetadata(store)
+loadTracks(store)
 
 const view = (
   <Provider store={store}>

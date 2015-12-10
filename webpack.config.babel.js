@@ -15,7 +15,7 @@ const config = {
     './site/server',
   ],
 
-  devtool: 'cheap-module-source-map',
+  devtool: 'source-map',
 
   module: {
     loaders: [

@@ -66,6 +66,16 @@ export function startPlayback() {
   return { type: types.START_PLAYBACK }
 }
 
+export function fetchAndStartPlayback(song) {
+  return (dispatch, getState) => {
+    const state = getState().player
+    if (state.song != song || state.loaded) {
+      dispatch(fetchSong(song))
+    }
+    dispatch(startPlayback())
+  }
+}
+
 export function pausePlayback() {
   return { type: types.PAUSE_PLAYBACK }
 }

@@ -16,9 +16,11 @@ import {
 } from '../constants/playbackStates'
 
 const StateRecord = Immutable.Record({
-  loading: false,
+  song: null,
+  loaded: false,
   state: STOPPED,
   startTime: null,
+  pauseTime: null,
   tracks: Immutable.Map(),
   resources: Immutable.Map(),
 })
@@ -27,6 +29,11 @@ const TrackRecord = Immutable.Record({
   loading: Immutable.Set(),
   module: null,
   resources: Immutable.Map(),
+})
+
+const TrackResourceRecord = Immutable.Record({
+  type: null,
+  url: null,
 })
 
 const ResourceRecord = Immutable.Record({
@@ -42,7 +49,7 @@ function track(state = TrackRecord(), action) {
       return state.set('module', action.module)
 
     case LOAD_TRACK_START:
-      const resources = Immutable.fromJS(action.resources)
+      const resources = Immutable.fromJS(action.resources, (k, v) => k ? TrackResourceRecord(v) : v)
       return state.merge({
         loading: resources.valueSeq().map(res => res.get('url')).toSet(),
         resources
@@ -53,7 +60,11 @@ function track(state = TrackRecord(), action) {
 export default function player(state = StateRecord(), action) {
   switch (action.type) {
     case LOAD_SONG_START:
-      return state.set('loading', true)
+      return state.merge({
+        song: action.songKey,
+        loaded: false,
+        tracks: state.tracks.set(action.song, Immutable.Map()),
+      })
 
     case SET_TRACK:
     case LOAD_TRACK_START:
@@ -63,7 +74,7 @@ export default function player(state = StateRecord(), action) {
     case LOAD_RESOURCE_START:
       return state.setIn([ 'resources', action.url ], ResourceRecord({
         loading: true,
-        type: action.type,
+        type: action.resourceType,
       }))
 
     case LOAD_RESOURCE_SUCCESS:
@@ -86,7 +97,10 @@ export default function player(state = StateRecord(), action) {
         }
 
         if (finished) {
-          mutState.set('loading', false)
+          mutState.set('loaded', true)
+          if (state.state === PLAYING) {
+            mutState.set('startTime', performance.now())
+          }
         }
       })
 
@@ -97,15 +111,28 @@ export default function player(state = StateRecord(), action) {
       })
 
     case START_PLAYBACK:
+      let startTime
+      if (!state.loaded) {
+        startTime = null
+      } else {
+        startTime = performance.now()
+      }
+
+      if (state.state === PAUSED) {
+        startTime -= state.pauseTime
+      }
+
       return state.merge({
         state: PLAYING,
-        startTime: performance.now(),
+        startTime: startTime,
+        pauseTime: null,
       })
 
     case PAUSE_PLAYBACK:
       return state.merge({
         state: PAUSED,
-        pauseTime: performance.now(),
+        startTime: null,
+        pauseTime: performance.now() - state.startTime,
       })
 
     default:

@@ -5,45 +5,119 @@ import {
   EVENT_MIDI_NOTE_OFF,
   createParser as createEventParser,
 } from 'midievents'
+import {
+  PLAYING,
+  PAUSED,
+  STOPPED,
+} from '../constants/playbackStates'
+import {
+  MIDI,
+} from '../constants/resourceTypes'
 import MIDIFile from 'midifile'
 import MIDIPlayer from 'midiplayer'
 
 export default class Player {
   constructor(buffer) {
-    this.midiFile = new MIDIFile(buffer)
-    this.midiPlayer = new MIDIPlayer({
-      output: {send: this._handleMIDIEvent.bind(this)},
-    })
-    this.midiPlayer.load(this.midiFile)
     this.ctx = new AudioContext()
     this.tracks = new Map()
-    this.trackGains = new Map()
-    window.ctx = this.ctx
+    this.midiPlayers = new Map()
   }
 
-  setTracks(tracks) {
-    for (let [trackKey, track] of this.tracks) {
-      if (!tracks.has(trackKey) || track !== tracks.get(trackKey)) {
-        this.trackGains.get(trackKey).disconnect()
-        this.trackGains.delete(trackKey)
+  update(state) {
+    const tracks = state.tracks.get(state.song)
+
+    // clean up removed/replaced tracks
+    for (let [ trackKey, trackState ] of this.tracks) {
+      if (!tracks.has(trackKey) || trackState.module !== tracks.get(trackKey).module) {
+        trackState.gain.disconnect()
+        this.tracks.delete(trackKey)
       }
     }
-    for (let [trackKey, track] of tracks) {
-      if (!this.trackGains.has(trackKey)) {
-        const gain = this.ctx.createGain()
-        gain.connect(this.ctx.destination)
-        this.trackGains.set(trackKey, gain)
+
+    // create new tracks
+    for (let [ trackKey, track ] of tracks) {
+      if (!this.tracks.has(trackKey)) {
+        this.tracks.set(trackKey, this._createTrack(state, track))
       }
     }
-    this.tracks = tracks
+
+    // take stock of needed MIDI players
+    var usedMIDI = new Set()
+    for (let [ trackKey, trackState ] of this.tracks) {
+      for (let [ midiURL, ] of trackState.midis) {
+        usedMIDI.add(midiURL)
+      }
+    }
+
+    // create new MIDI players
+    for (let midiURL of usedMIDI) {
+      if (!this.midiPlayers.has(midiURL)) {
+        const resource = state.resources.get(midiURL)
+        if (!resource.data) {
+          continue
+        }
+        let midiFile = new MIDIFile(resource.data)
+        let midiPlayer = new MIDIPlayer({
+          output: { send: this._handleMIDIEvent.bind(this, midiURL) },
+        })
+        midiPlayer.load(midiFile)
+        this.midiPlayers.set(midiURL, midiPlayer)
+      }
+    }
+
+    this.timeOffset = performance.now() / 1000 - this.ctx.currentTime
+    for (let [ midiURL, midiPlayer ] of this.midiPlayers) {
+      if (!usedMIDI.has(midiURL)) {
+        // remove unused MIDI players
+        midiPlayer.stop()
+        this.midiPlayers.delete(midiURL)
+      } else {
+        // synchronize MIDI player state
+        if (state.state === PLAYING && state.loaded) {
+          midiPlayer.stop()
+          midiPlayer.play()
+          midiPlayer.startTime = state.startTime
+        } else {
+          midiPlayer.stop()
+        }
+      }
+    }
   }
 
-  play() {
-    this.timeOffset = performance.now() / 1000 - ctx.currentTime
-    this.midiPlayer.play()
+  _createTrack(state, track) {
+    const gain = this.ctx.createGain()
+    gain.connect(this.ctx.destination)
+
+    let trackState = {
+      module: track.module,
+      gain,
+      midis: new Map(),
+    }
+
+    const trackTransport = {
+      playMIDI(resource, onEvent) {
+        if (!resource.type === MIDI) {
+          throw new Error('playMIDI requires a resource of type MIDI')
+        }
+        trackState.midis.set(resource.url, onEvent)
+      }
+    }
+
+    const trackResources = track.resources.map(res =>
+      res.toMap().set('data', state.resources.get(res.url).data)
+    ).toJS()
+
+    track.module.create({
+      transport: trackTransport,
+      res: trackResources,
+      ctx: this.ctx,
+      out: gain,
+    })
+
+    return trackState
   }
 
-  _handleMIDIEvent(data, time) {
+  _handleMIDIEvent(midiURL, data, time) {
     // FIXME: work around midievents expecting more than one event.
     // also 3rd and 7th arguments are placeholder times. should pull req
     // midievents to make it easier to handle single events, or modify midiplayer.
@@ -57,6 +131,11 @@ export default class Player {
     ev.time = time / 1000 - this.timeOffset
     ev.midi = {data, time}
 
+    if (ev.time <= this.ctx.currentTime) {
+      // skip events in the past (due to seek, etc.)
+      return
+    }
+
     if (ev.type === EVENT_MIDI_NOTE_ON || ev.type === EVENT_MIDI_NOTE_OFF) {
       ev.note = ev.param1
       // https://en.wikipedia.org/wiki/MIDI_Tuning_Standard#Frequency_values
@@ -64,7 +143,10 @@ export default class Player {
     }
 
     for (let [trackKey, track] of this.tracks) {
-      track(ev, this.ctx, this.trackGains.get(trackKey))
+      const subscription = track.midis.get(midiURL)
+      if (subscription) {
+        subscription(Object.assign({}, ev))
+      }
     }
   }
 }

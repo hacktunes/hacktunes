@@ -69,7 +69,7 @@ export function startPlayback() {
 export function fetchAndStartPlayback(song) {
   return (dispatch, getState) => {
     const state = getState().player
-    if (state.song != song || state.loaded) {
+    if (state.song != song || !state.loaded) {
       dispatch(fetchSong(song))
     }
     dispatch(startPlayback())

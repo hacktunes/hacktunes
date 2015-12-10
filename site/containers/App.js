@@ -1,19 +1,19 @@
 import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { PLAYING } from '../constants/playbackStates'
 import * as PlayerActions from '../actions/player'
 
 class App extends Component {
   render() {
-    const { metadata, player, actions } = this.props
+    const { metadata, now, player, actions } = this.props
 
     const tracks = metadata.songs[metadata.current].tracks
     return (
       <div>
         <button onClick={actions.startPlayback}>play</button>
         <button onClick={actions.pausePlayback}>pause</button>
-        hiiiii ...!!!
-        {player.startTime}
+        <div>progress: {player.state === PLAYING ? now - player.startTime : player.pauseTime}</div>
         {Object.keys(tracks).map(trackKey => {
           return <div key={trackKey}>{JSON.stringify(tracks[trackKey])} {JSON.stringify(player.tracks.get(metadata.current))}</div>
         })}
@@ -28,6 +28,7 @@ App.propTypes = {
 function mapStateToProps(state) {
   return {
     metadata: state.metadata,
+    now: state.now,
     player: state.player,
   }
 }

@@ -1,3 +1,5 @@
+export const CLOCK_TICK = 'CLOCK_TICK'
+
 export const SET_METADATA = 'SET_METADATA'
 export const SET_TRACK = 'SET_TRACK'
 

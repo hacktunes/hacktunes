@@ -5,7 +5,6 @@ import * as playerActions from './actions/player'
 import * as metadataActions from './actions/metadata'
 import { bindActionCreators } from 'redux'
 import Player from './lib/Player'
-import { fetchAndStartPlayback } from './actions/player'
 
 export default function client(store, view) {
   if (process.env.NODE_ENV !== 'production') {
@@ -17,9 +16,6 @@ export default function client(store, view) {
   }
 
   const ui = ReactDOM.render(view, document.getElementById('app'))
-
-  const currentSong = store.getState().metadata.current
-  store.dispatch(fetchAndStartPlayback(currentSong))
 
   const player = new Player()
   let lastPlayerState

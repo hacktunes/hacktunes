@@ -1,3 +1,4 @@
+import Immutable from 'immutable'
 import {
   EVENT_META,
   EVENT_META_TEXT,
@@ -24,7 +25,7 @@ export default class Player {
   }
 
   update(state) {
-    const tracks = state.tracks.get(state.song)
+    const tracks = state.tracks.get(state.song, Immutable.Map())
 
     // clean up removed/replaced tracks
     for (let [ trackKey, trackState ] of this.tracks) {
@@ -35,9 +36,11 @@ export default class Player {
     }
 
     // create new tracks
-    for (let [ trackKey, track ] of tracks) {
-      if (!this.tracks.has(trackKey)) {
-        this.tracks.set(trackKey, this._createTrack(state, track))
+    if (state.loaded) {
+      for (let [ trackKey, track ] of tracks) {
+        if (!this.tracks.has(trackKey)) {
+          this.tracks.set(trackKey, this._createTrack(state, track))
+        }
       }
     }
 

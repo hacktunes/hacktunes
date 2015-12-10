@@ -132,7 +132,7 @@ export default function player(state = StateRecord(), action) {
       return state.merge({
         state: PAUSED,
         startTime: null,
-        pauseTime: performance.now() - state.startTime,
+        pauseTime: state.pauseTime || performance.now() - state.startTime,
       })
 
     default:

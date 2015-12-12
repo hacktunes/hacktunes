@@ -15,7 +15,7 @@ const config = {
   },
 
   externals: [
-    './site/server',
+    'react-dom/server',
   ],
 
   devtool: 'source-map',

@@ -18,9 +18,11 @@ const view = (
 )
 
 if (typeof document !== 'undefined') {
+  require('style!./site/main.less')
   require('./site/client').default(store, view)
 }
 
 export default function renderPage(locals, callback) {
+  require('./site/main.less')
   return renderStaticPage(store, view, locals, callback)
 }

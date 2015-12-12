@@ -1,6 +1,8 @@
 import path from 'path'
 import webpack from 'webpack'
 import StaticSiteGeneratorPlugin from 'static-site-generator-webpack-plugin'
+import ExtractTextPlugin from 'extract-text-webpack-plugin'
+
 
 const config = {
   entry: './index.js',
@@ -19,6 +21,10 @@ const config = {
 
   module: {
     loaders: [
+      {
+        test: /\.less$/,
+        loader: 'css!autoprefixer!less',
+      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -45,6 +51,12 @@ const config = {
     }),
     new StaticSiteGeneratorPlugin('main', ['/'], {data: {}}),
   ],
+}
+
+if (process.env.NODE_ENV === 'production') {
+  const lessLoader = config.module.loaders[0]
+  lessLoader.loader = ExtractTextPlugin.extract(lessLoader.loader)
+  config.plugins.push(new ExtractTextPlugin('main.[contenthash].css'))
 }
 
 export default config

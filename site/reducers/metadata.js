@@ -11,7 +11,7 @@ const StateRecord = Immutable.Record({
 export default function metadata(state = StateRecord(), action) {
   switch (action.type) {
     case SET_METADATA:
-      return StateRecord(action.metadata)
+      return state.mergeDeep(action.metadata)
     default:
       return state
   }

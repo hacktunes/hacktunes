@@ -8,7 +8,7 @@ class App extends Component {
   render() {
     const { metadata, now, player, actions } = this.props
 
-    const tracks = metadata.songs[metadata.current].tracks
+    const tracks = metadata.songs.get(metadata.current).tracks
     return (
       <div>
         <button onClick={() => actions.fetchAndStartPlayback(metadata.current)}>play</button>

@@ -23,6 +23,9 @@ class App extends Component {
 }
 
 App.propTypes = {
+  metadata: PropTypes.object.isRequired,
+  now: PropTypes.number.isRequired,
+  player: PropTypes.object.isRequired,
 }
 
 function mapStateToProps(state) {

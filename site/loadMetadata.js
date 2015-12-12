@@ -15,7 +15,7 @@ function _loadMetadata(store) {
     metaData.songs[songKey] = metaData.songs[songKey] || {}
 
     if (filename === 'song.json') {
-      metaData.songs[songKey].info = songRequire(name)
+      Object.assign(metaData.songs[songKey], songRequire(name))
     } else if (filename === 'package.json') {
       const trackKey = parts[2]
       metaData.songs[songKey].tracks = metaData.songs[songKey].tracks || {}

@@ -1,8 +1,6 @@
 import React from 'react'
 
-export default function Page({title, html, initialData, scriptHash, cssName}) {
-  const json = {__html: JSON.stringify(initialData)}
-
+export default function Page({title, html, scriptHash, cssName}) {
   return (
     <html lang="en">
       <head>

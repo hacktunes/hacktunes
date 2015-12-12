@@ -1,22 +1,27 @@
 import * as types from '../constants/actionTypes'
 import { MIDI } from '../constants/resourceTypes'
 
+export function setSong(songKey) {
+  return { type: types.SET_SONG, songKey }
+}
+
+export function setAllTracksStart() {
+  return { type: types.SET_ALL_TRACKS_START }
+}
+
 export function setTrack(songKey, trackKey, module) {
   return { type: types.SET_TRACK, songKey, trackKey, module }
 }
 
-export function fetchSong(songKey) {
+export function fetchSong() {
   return (dispatch, getState) => {
-    dispatch(loadSongStart(songKey))
-    const tracks = getState().player.tracks.get(songKey)
+    const state = getState().player
+    const songKey = state.song
+    const tracks = state.tracks.get(songKey)
     for (let trackKey of tracks.keys()) {
       dispatch(fetchTrack(songKey, trackKey))
     }
   }
-}
-
-export function loadSongStart(songKey) {
-  return { type: types.LOAD_SONG_START, songKey }
 }
 
 export function fetchTrack(songKey, trackKey) {
@@ -66,11 +71,11 @@ export function startPlayback() {
   return { type: types.START_PLAYBACK }
 }
 
-export function fetchAndStartPlayback(song) {
+export function fetchAndStartPlayback() {
   return (dispatch, getState) => {
     const state = getState().player
-    if (state.song != song || !state.loaded) {
-      dispatch(fetchSong(song))
+    if (!state.loaded) {
+      dispatch(fetchSong())
     }
     dispatch(startPlayback())
   }

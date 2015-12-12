@@ -11,7 +11,7 @@ class App extends Component {
     const tracks = metadata.songs.get(metadata.current).tracks
     return (
       <div>
-        <button onClick={() => actions.fetchAndStartPlayback(metadata.current)}>play</button>
+        <button onClick={actions.fetchAndStartPlayback}>play</button>
         <button onClick={actions.pausePlayback}>pause</button>
         <div>progress: {player.state === PLAYING ? now - player.startTime : player.pauseTime}</div>
         {Object.keys(tracks).map(trackKey => {

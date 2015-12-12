@@ -1,9 +1,12 @@
 export const CLOCK_TICK = 'CLOCK_TICK'
 
 export const SET_METADATA = 'SET_METADATA'
+
+export const SET_ALL_TRACKS_START = 'LOAD_ALL_TRACKS_START'
 export const SET_TRACK = 'SET_TRACK'
 
-export const LOAD_SONG_START = 'LOAD_SONG_START'
+export const SET_SONG = 'SET_SONG'
+
 export const LOAD_TRACK_START = 'LOAD_TRACK_START'
 
 export const LOAD_RESOURCE_START = 'LOAD_RESOURCE_START'

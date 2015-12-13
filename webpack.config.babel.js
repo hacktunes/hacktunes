@@ -36,6 +36,14 @@ const config = {
         loader: 'json',
       },
       {
+        test: /\.svg$|\.woff$/,
+        loader: 'url',
+      },
+      {
+        test: /\/avatar\/.*\.png$/,
+        loader: 'file?name=[name].[hash].[ext]',
+      },
+      {
         test: /\/static\/favicon\.png$/,
         loader: 'file?name=[name].[ext]',
       },

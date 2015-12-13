@@ -1,0 +1,395 @@
+@import '~reset.css';
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+@hue: 266;
+@brand-color: hsl(@hue, 50%, 49%);
+@dark-text-color: hsl(@hue - 4, 28%, 20%);
+@bold-ui-color: hsl(@hue - 4, 45%, 34%);
+@dark-ui-color: hsl(@hue - 24, 28%, 37%);
+@player-bg-color: hsl(@hue - 24, 41%, 71%);
+@progress-bg-color: hsl(@hue - 24, 34%, 55%);
+@track-bg-color: hsl(@hue - 26, 16%, 96%);
+@track-separator-color: hsl(@hue - 26, 15%, 79%);
+@footer-bg-color: hsl(@hue - 26, 6%, 90%);
+@dark-level-color: hsl(105, 45%, 34%);
+@light-level-color: hsl(116, 15%, 57%);
+@neutral-level-color: hsl(@hue - 26, 16%, 82%);
+
+@sans-font: Droid Sans, sans-serif;
+@mono-font: Droid Sans Mono, monospace;
+
+@font-face {
+  font-family: 'Droid Sans';
+  src: url('./static/DroidSans.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Droid Sans';
+  src: url('./static/DroidSans-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Droid Sans Mono';
+  src: url('./static/DroidSansMono.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.hover-lighten(@bgcolor, @fade: 85%) {
+  background-color: @bgcolor;
+  transition: background .1s ease-out;
+
+  &:hover {
+    background-color: mix(@bgcolor, white, @fade);
+  }
+}
+
+* {
+  // disable iOS / Android tap highlighting
+  -webkit-tap-highlight-color: transparent;
+}
+
+*:focus {
+  outline: none;
+}
+
+html {
+  font-size: 10px;
+}
+
+body {
+  font-family: @sans-font;
+}
+
+.container {
+  width: 960px;
+  margin: 0 auto;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.player-box {
+  background: linear-gradient(to bottom, white, @player-bg-color);
+
+  header {
+    display: flex;
+    align-items: center;
+    height: 4.7rem;
+    margin-left: .25rem;
+    padding-top: 1rem;
+    box-sizing: border-box;
+    font-family: @mono-font;
+    font-size: 1.2rem;
+
+    & > * {
+      margin: 0 1.5rem;
+    }
+
+    .logotype {
+      display: flex;
+      align-items: center;
+
+      .logo {
+        background: url('./static/logo-color.svg') no-repeat;
+        background-size: contain;
+        width: 3.5rem;
+        height: 3.5rem;
+        margin-right: .5rem;
+      }
+
+      .type {
+        color: @brand-color;
+      }
+    }
+
+    .whats-this {
+      text-decoration: underline;
+      color: @brand-color;
+    }
+
+    .fork {
+      background: @bold-ui-color;
+      color: white;
+      padding: .66rem 1.33rem;
+      opacity: .75;
+    }
+  }
+
+  .player {
+    display: flex;
+    align-items: center;
+    height: 24.5rem;
+    padding-left: 5.5rem;
+
+    .controls {
+      display: flex;
+      align-items: center;
+    }
+
+    .play-toggle {
+      width: 10rem;
+      height: 10rem;
+      border-radius: 100%;
+      border: none;
+      box-shadow: 0 .3rem 1rem @dark-ui-color;
+      cursor: pointer;
+      transition:
+        box-shadow .1s ease-out,
+        transform .1s ease-out;
+
+      &:hover {
+        box-shadow: 0 .3rem 1.5rem @dark-ui-color;
+        transform: scale(1.035);
+      }
+
+      &:active {
+        box-shadow:
+          0 .2rem .7rem @dark-ui-color,
+          0 -.3rem 3rem @neutral-level-color inset;
+        transform: translateY(.1rem) scale(1.05);
+      }
+
+      &.play {
+        background: white url('./static/play.svg') 62% center no-repeat;
+        background-size: 5rem;
+      }
+
+      &.pause {
+        background: white url('./static/pause.svg') center center no-repeat;
+        background-size: 4.5rem;
+      }
+    }
+
+    .info {
+      margin-left: 2.75rem;
+
+      .comp {
+        color: @dark-ui-color;
+        font-size: 1.5rem;
+        margin-bottom: .25rem;
+      }
+
+      .title {
+        color: @dark-text-color;
+        font-size: 4rem;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .progress {
+    height: 2rem;
+    background: @progress-bg-color;
+  }
+}
+
+.song-description {
+  background: white;
+  color: @dark-ui-color;
+  font-size: 1.75rem;
+  text-align: center;
+  padding: 2.75rem 0;
+}
+
+.track-list {
+  flex: 1;
+  background: @track-bg-color;
+  padding-bottom: 10rem;
+
+  .track {
+    background: @track-bg-color;
+    border-top: 2px solid @track-separator-color;
+
+    &:last-child {
+      border-bottom: 2px solid @track-separator-color;
+    }
+  }
+
+  .track > .container {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem 8.5rem;
+    box-sizing: border-box;
+  }
+
+  .avatar {
+    background: white;
+    border-radius: 100%;
+    box-shadow: 0 0 .5rem @dark-ui-color;
+    user-select: none;
+
+    img {
+      @size: 3.35rem;
+      width: @size;
+      height: @size;
+      padding: .5rem;
+    }
+  }
+
+  .track-info {
+    margin-left: 1.75rem;
+    font-size: 1.4rem;
+    line-height: 1.8rem;
+
+    .name {
+      font-weight: bold;
+    }
+
+    .by, .author {
+      opacity: .65;
+    }
+
+    .by {
+      margin-left: .15em;
+    }
+
+    .description {
+      &:before { content: '"' }
+      &:after { content: '"' }
+    }
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  @control-size: 2.65rem;
+
+  .github-link {
+    width: @control-size;
+    height: @control-size;
+    background: url('./static/github.svg') center center no-repeat;
+    background-size: 80%;
+    .hover-lighten(black);
+    opacity: .75;
+  }
+
+  .toggle {
+    width: @control-size;
+    height: @control-size;
+    margin-left: 1.75rem;
+    border: (@control-size * .175) solid @dark-ui-color;
+    box-sizing: border-box;
+    cursor: pointer;
+
+    &.on {
+      background: @dark-ui-color url('./static/check.svg') center center no-repeat;
+      background-size: contain;
+      .hover-lighten(@dark-ui-color);
+    }
+  }
+
+  .levels-container {
+    display: flex;
+    width: 30rem;
+    height: @control-size;
+
+    .levels {
+      width: 100%;
+      margin-left: .75rem;
+
+      .level {
+        height: @control-size * .45;
+        margin-bottom: @control-size * .1;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+.levels {
+  .level {
+    position: relative;
+    background: @neutral-level-color;
+    width: 100%;
+  }
+
+  .dark, .light {
+    position: absolute;
+    height: 100%;
+  }
+
+  .dark {
+    background: @dark-level-color;
+    z-index: 2;
+  }
+
+  .light {
+    background: @light-level-color;
+    z-index: 1;
+  }
+}
+
+.stick-bottom {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  box-shadow: 0 0 1rem fade(black, 35%);
+  z-index: 100;
+}
+
+.add-promo {
+  @height: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  height: @height;
+  line-height: @height;
+  font-size: 2rem;
+  .hover-lighten(@dark-level-color, 92%);
+
+  .add-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    background: url('./static/add.svg') no-repeat;
+    background-size: contain;
+  }
+
+  .title {
+    margin-left: 1.25rem;
+    font-weight: bold;
+    opacity: .75;
+  }
+
+  .details {
+    margin-left: 3rem;
+    font-size: .85em;
+    opacity: .65;
+  }
+}
+
+footer {
+  @height: 2.7rem;
+  background: @footer-bg-color;
+  height: @height;
+  line-height: @height;
+  font-family: @mono-font;
+  text-align: center;
+
+  a {
+    color: black;
+    opacity: .5;
+    font-size: 1.15rem;
+    margin: 0 2rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

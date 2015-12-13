@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": {
     "name": "chromakode",
-    "email": "c@chromakode.com"
+    "email": "c@chromakode.com",
+    "url": "http://chromako.de"
   }
 }

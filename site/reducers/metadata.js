@@ -17,6 +17,7 @@ const SongRecord = Immutable.Record({
 const AuthorRecord = Immutable.Record({
   name: null,
   email: null,
+  url: null,
 })
 
 const TrackRecord = Immutable.Record({

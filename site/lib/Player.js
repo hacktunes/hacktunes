@@ -18,7 +18,7 @@ import MIDIFile from 'midifile'
 import MIDIPlayer from 'midiplayer'
 
 export default class Player {
-  constructor(buffer) {
+  constructor() {
     this.ctx = new AudioContext()
     this.tracks = new Map()
     this.midiPlayers = new Map()

@@ -31,7 +31,7 @@ export default function client(store, view) {
 
   setInterval(() => store.dispatch(clockTick(performance.now())), 1000 / 20)
 
-  window.hacktunes = {
+  window.H = {
     store,
     ui,
     player,

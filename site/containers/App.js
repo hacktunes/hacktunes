@@ -75,32 +75,40 @@ class App extends Component {
           {description}
         </div>
         <div className="track-list">
-          {song.tracks.map((track, trackKey) => (
-            <div key={trackKey} className="track">
-              <div className="container">
-                <div className="avatar">
-                  <img src={avatarRequire('./' + track.author.email + '.png')} alt="" />
-                </div>
-                <div className="track-info">
-                  <div className="name-line">
-                    <span className="name">{track.name}</span>
-                    <span className="by"> by </span>
-                    <a href={track.author.url} className="author">{track.author.name}</a>
+          {song.tracks.map((track, trackKey) => {
+            const trackLevels = levels.get(trackKey)
+            let avatarScale = 1
+            if (trackLevels) {
+              const maxLevel = clamp(0, (trackLevels.leftMax + trackLevels.rightMax) / 2, 1)
+              avatarScale = 1 + .35 * maxLevel
+            }
+            return (
+              <div key={trackKey} className="track">
+                <div className="container">
+                  <div className="avatar" style={{transform: `scale(${avatarScale})`}}>
+                    <img src={avatarRequire('./' + track.author.email + '.png')} alt="" />
                   </div>
-                  <div className="description">{track.description}</div>
-                </div>
-                <div className="spacer" />
-                <a href="FIXME" className="github-link" />
-                <div className="active-toggle toggle on" />
-                <div className="levels-container">
-                  <Levels levels={levels.get(trackKey)} />
-                  <div className="range-slider fader">
-                    <div className="handle" style={{'left': '75%'}} />
+                  <div className="track-info">
+                    <div className="name-line">
+                      <span className="name">{track.name}</span>
+                      <span className="by"> by </span>
+                      <a href={track.author.url} className="author">{track.author.name}</a>
+                    </div>
+                    <div className="description">{track.description}</div>
+                  </div>
+                  <div className="spacer" />
+                  <a href="FIXME" className="github-link" />
+                  <div className="active-toggle toggle on" />
+                  <div className="levels-container">
+                    <Levels levels={trackLevels} />
+                    <div className="range-slider fader">
+                      <div className="handle" style={{'left': '75%'}} />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )).valueSeq()}
+            )
+          }).valueSeq()}
         </div>
         <div className="stick-bottom">
           <a href="FIXME" className="add-promo">

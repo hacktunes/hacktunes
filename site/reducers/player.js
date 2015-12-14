@@ -9,6 +9,7 @@ import {
   LOAD_RESOURCE_FAILURE,
   START_PLAYBACK,
   PAUSE_PLAYBACK,
+  SEEK_PLAYBACK,
 } from '../constants/actionTypes'
 import {
   PLAYING,
@@ -139,6 +140,19 @@ export default function player(state = StateRecord(), action) {
         startTime: null,
         pauseTime: state.pauseTime || performance.now() - state.startTime,
       })
+
+    case SEEK_PLAYBACK:
+      if (state.state === PAUSED) {
+        return state.merge({
+          pauseTime: action.seekTime,
+        })
+      } else {
+        return state.merge({
+          state: PLAYING,
+          startTime: performance.now() - action.seekTime,
+          pauseTime: null,
+        })
+      }
 
     default:
       return state

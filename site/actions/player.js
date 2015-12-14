@@ -84,3 +84,7 @@ export function fetchAndStartPlayback() {
 export function pausePlayback() {
   return { type: types.PAUSE_PLAYBACK }
 }
+
+export function seekPlayback(seekTime) {
+  return { type: types.SEEK_PLAYBACK, seekTime }
+}

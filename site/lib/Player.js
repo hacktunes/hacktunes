@@ -68,10 +68,11 @@ export default class Player {
           output: { send: this._handleMIDIEvent.bind(this, midiURL) },
         })
         midiPlayer.load(midiFile)
-        const midiDuration = midiPlayer.events[midiPlayer.events.length - 1].playTime
-        songDuration = Math.max(songDuration, midiDuration)
         this.midiPlayers.set(midiURL, midiPlayer)
       }
+      const midiEvents = this.midiPlayers.get(midiURL).events
+      const midiDuration = midiEvents[midiEvents.length - 1].playTime
+      songDuration = Math.max(songDuration, midiDuration)
     }
 
     this.timeOffset = performance.now() / 1000 - this.ctx.currentTime

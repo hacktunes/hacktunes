@@ -18,6 +18,7 @@ a {
 @dark-level-color: hsl(105, 45%, 34%);
 @light-level-color: hsl(116, 15%, 57%);
 @neutral-level-color: hsl(@hue - 26, 16%, 82%);
+@clip-level-color: hsl(0, 85%, 50%);
 
 @sans-font: Droid Sans, sans-serif;
 @mono-font: Droid Sans Mono, monospace;
@@ -317,6 +318,23 @@ body {
     position: relative;
     background: @neutral-level-color;
     width: 100%;
+    overflow: hidden;
+
+    &:after {
+      content: '';
+      position: absolute;
+      right: 0;
+      height: 100%;
+      border-right: 4px solid @clip-level-color;
+      opacity: 0;
+      transition: opacity .5s ease-out;
+      z-index: 3;
+    }
+
+    &.clipping:after {
+      opacity: 1;
+      transition-duration: 0s;
+    }
   }
 
   .dark, .light {

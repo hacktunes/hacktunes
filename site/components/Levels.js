@@ -1,23 +1,26 @@
 import React, { Component, PropTypes } from 'react'
+import classNames from 'classnames'
+import { LevelsRecord } from '../constants/recordTypes'
 
-export default function Levels({ leftDark, leftLight, rightDark, rightLight }) {
+export default function Levels({ levels }) {
   return (
     <div className="levels">
-      <div className="level left">
-        <div className="dark" style={{'width': `${100 * leftDark}%`}} />
-        <div className="light" style={{'width': `${100 * leftLight}%`}} />
+      <div className={classNames('level', 'left', levels.leftClip && 'clipping')}>
+        <div className="dark" style={{'width': `${100 * levels.leftAvg}%`}} />
+        <div className="light" style={{'width': `${100 * levels.leftMax}%`}} />
       </div>
-      <div className="level right">
-        <div className="dark" style={{'width': `${100 * rightDark}%`}} />
-        <div className="light" style={{'width': `${100 * rightLight}%`}} />
+      <div className={classNames('level', 'right', levels.rightClip && 'clipping')}>
+        <div className="dark" style={{'width': `${100 * levels.rightAvg}%`}} />
+        <div className="light" style={{'width': `${100 * levels.rightMax}%`}} />
       </div>
     </div>
   )
 }
 
 Levels.propTypes = {
-  leftDark: PropTypes.number.isRequired,
-  leftLight: PropTypes.number.isRequired,
-  rightDark: PropTypes.number.isRequired,
-  rightLight: PropTypes.number.isRequired,
+  levels: PropTypes.object,
+}
+
+Levels.defaultProps = {
+  levels: LevelsRecord(),
 }

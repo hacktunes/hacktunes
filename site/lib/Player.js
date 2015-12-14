@@ -18,7 +18,8 @@ import MIDIFile from 'midifile'
 import MIDIPlayer from 'midiplayer'
 
 export default class Player {
-  constructor() {
+  constructor(actions) {
+    this.actions = actions
     this.ctx = new AudioContext()
     this.tracks = new Map()
     this.midiPlayers = new Map()
@@ -30,7 +31,9 @@ export default class Player {
     // clean up removed/replaced tracks
     for (let [ trackKey, trackState ] of this.tracks) {
       if (!tracks.has(trackKey) || trackState.module !== tracks.get(trackKey).module) {
-        trackState.gain.disconnect()
+        trackState.gainNode.disconnect()
+        trackState.analyzerNode.disconnect()
+        trackState.spyNode.disconnect()
         this.tracks.delete(trackKey)
       }
     }
@@ -39,7 +42,7 @@ export default class Player {
     if (state.loaded) {
       for (let [ trackKey, track ] of tracks) {
         if (!this.tracks.has(trackKey)) {
-          this.tracks.set(trackKey, this._createTrack(state, track))
+          this.tracks.set(trackKey, this._createTrack(trackKey, state, track))
         }
       }
     }
@@ -53,6 +56,7 @@ export default class Player {
     }
 
     // create new MIDI players
+    let songDuration = 0
     for (let midiURL of usedMIDI) {
       if (!this.midiPlayers.has(midiURL)) {
         const resource = state.resources.get(midiURL)
@@ -64,6 +68,8 @@ export default class Player {
           output: { send: this._handleMIDIEvent.bind(this, midiURL) },
         })
         midiPlayer.load(midiFile)
+        const midiDuration = midiPlayer.events[midiPlayer.events.length - 1].playTime
+        songDuration = Math.max(songDuration, midiDuration)
         this.midiPlayers.set(midiURL, midiPlayer)
       }
     }
@@ -85,15 +91,27 @@ export default class Player {
         }
       }
     }
+
+    this.actions.playerUpdateFinish(songDuration)
   }
 
-  _createTrack(state, track) {
-    const gain = this.ctx.createGain()
-    gain.connect(this.ctx.destination)
+  _createTrack(trackKey, state, track) {
+    const gainNode = this.ctx.createGain()
+    gainNode.connect(this.ctx.destination)
+
+    const analyzerNode = this.ctx.createScriptProcessor(0, 2, 2)
+    analyzerNode.addEventListener('audioprocess', this._handleTrackAudio.bind(this, trackKey))
+    analyzerNode.connect(this.ctx.destination)
+
+    const spyNode = this.ctx.createGain()
+    spyNode.connect(gainNode)
+    spyNode.connect(analyzerNode)
 
     let trackState = {
       module: track.module,
-      gain,
+      gainNode,
+      analyzerNode,
+      spyNode,
       midis: new Map(),
     }
 
@@ -114,7 +132,7 @@ export default class Player {
       transport: trackTransport,
       res: trackResources,
       ctx: this.ctx,
-      out: gain,
+      out: spyNode,
     })
 
     return trackState
@@ -151,5 +169,29 @@ export default class Player {
         subscription(Object.assign({}, ev))
       }
     }
+  }
+
+  _handleTrackAudio(trackKey, ev) {
+    const sampleCount = 100
+    const levels = {}
+    const buf = ev.inputBuffer
+    for (let c = 0; c < buf.numberOfChannels; c++) {
+      const data = buf.getChannelData(c)
+      const step = Math.floor(data.length / sampleCount)
+      let sum = 0
+      let max = 0
+      for (let i = 0; i < data.length; i += step) {
+        sum += Math.abs(data[i])
+        max = Math.max(max, data[i])
+      }
+      const avg = sum / sampleCount
+
+      const channel = c === 0 ? 'left' : 'right'
+      levels[channel + 'Avg'] = avg
+      levels[channel + 'Max'] = max
+      levels[channel + 'Clip'] = max > 1
+    }
+
+    this.actions.updateTrackLevels(trackKey, levels)
   }
 }

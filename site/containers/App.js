@@ -9,7 +9,7 @@ const avatarRequire = require.context('../../meta/avatar', false, /.png$/)
 
 class App extends Component {
   render() {
-    const { song, metrics, now, playerState, actions } = this.props
+    const { song, playerState, levels, songTime, songDuration, actions } = this.props
 
     const description = `This cover of Jonathan Coulton's "Still Alive" is generated on-the-fly by the following code:`
     const compMonth = 'December 2015';
@@ -46,7 +46,9 @@ class App extends Component {
             </div>
           </div>
           <div className="progress">
-
+            <div className="container">
+              <div className="filled" style={{width: `${100 * (songTime / songDuration)}%`}} />
+            </div>
           </div>
         </div>
         <div className="song-description">
@@ -71,7 +73,7 @@ class App extends Component {
                 <a href="FIXME" className="github-link" />
                 <div className="active-toggle toggle on" />
                 <div className="levels-container">
-                  <Levels levels={metrics.trackLevels.get(trackKey)} />
+                  <Levels levels={levels.get(trackKey)} />
                   <div className="range-slider fader">
                     <div className="handle" style={{'left': '75%'}} />
                   </div>
@@ -101,19 +103,23 @@ class App extends Component {
 
 App.propTypes = {
   song: PropTypes.object.isRequired,
-  metrics: PropTypes.object.isRequired,
-  now: PropTypes.number.isRequired,
   playerState: PropTypes.oneOf(Object.keys(playbackStates)),
+  levels: PropTypes.object.isRequired,
+  songTime: PropTypes.number.isRequired,
+  songDuration: PropTypes.number.isRequired,
 }
 
 function mapStateToProps(state) {
   const songKey = state.metadata.current
   const player = state.player
+  const songTime = state.now - player.startTime
+  const songDuration = state.playerMetrics.songDuration
   return {
     song: state.metadata.songs.get(songKey),
-    metrics: state.playerMetrics,
-    now: state.now,
     playerState: player.state,
+    levels: state.playerMetrics.trackLevels,
+    songTime,
+    songDuration,
   }
 }
 

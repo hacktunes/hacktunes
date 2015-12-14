@@ -195,15 +195,61 @@ body {
   }
 
   .progress {
-    height: 2rem;
+    @height: 2rem;
+    height: @height;
     background: @progress-bg-color;
 
     .container, .filled {
       height: 100%;
     }
 
+    .container {
+      position: relative;
+    }
+
     .filled {
       background: @dark-ui-color;
+    }
+
+    .duration {
+      position: absolute;
+      top: 0;
+      right: 0;
+      color: white;
+      font-size: 1.15rem;
+      font-weight: bold;
+      line-height: @height;
+      opacity: .75;
+      user-select: none;
+    }
+
+    .handle {
+      @offsetTop: 1.8rem;
+      position: absolute;
+      left: 0;
+      top: -@offsetTop;
+      padding: .25rem .7rem;
+      border-radius: .2rem;
+      background: white;
+      color: fade(black, 75%);
+      letter-spacing: .1em;
+      user-select: none;
+      box-shadow: 0 .1rem .1rem fade(black, 35%);
+      cursor: grab;
+      z-index: 10;
+
+      &:after {
+        @width: .4rem;
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        margin-left: -@width / 2;
+        background: white;
+        width: @width;
+        height: @offsetTop + @height;
+        z-index: -1;
+      }
     }
   }
 }

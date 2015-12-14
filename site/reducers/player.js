@@ -21,7 +21,7 @@ const StateRecord = Immutable.Record({
   loaded: false,
   state: STOPPED,
   startTime: null,
-  pauseTime: null,
+  pauseTime: 0,
   tracks: Immutable.Map(),
   resources: Immutable.Map(),
 })

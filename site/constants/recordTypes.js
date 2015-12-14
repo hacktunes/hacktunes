@@ -1,7 +1,7 @@
 import Immutable from 'immutable'
 
 export const MetricsRecord = Immutable.Record({
-  songDuration: null,
+  songDuration: 0,
   trackLevels: Immutable.Map(),
 })
 

@@ -4,16 +4,46 @@ import { connect } from 'react-redux'
 import * as playbackStates from '../constants/playbackStates'
 import * as PlayerActions from '../actions/player'
 import Levels from '../components/Levels'
+import clamp from '../lib/clamp'
 
 const avatarRequire = require.context('../../meta/avatar', false, /.png$/)
 
+function msToTimeString(ms) {
+  const seconds = Math.floor(ms / 1000)
+  const minutes = Math.floor(seconds / 60)
+  const remSeconds = seconds - 60 * minutes
+  return `${minutes}:${remSeconds < 10 ? '0' : ''}${remSeconds}`
+}
+
 class App extends Component {
+  componentDidMount() {
+    this.updateProgressHandle()
+  }
+
+  componentDidUpdate() {
+    this.updateProgressHandle()
+  }
+
+  updateProgressHandle() {
+    // using a CSS transform produces smoother progress movement because it's
+    // not subject to pixel rounding, but it requires a bit more post-render
+    // complexity, since transforms are not relative to the size of the parent.
+    const { songTime, songDuration } = this.props
+    const songFrac = songDuration && songTime / songDuration
+    const handleWidth = this.refs.progressHandle.offsetWidth
+    const progressWidth = this.refs.progress.offsetWidth
+    const position = progressWidth * songFrac - handleWidth / 2
+    this.refs.progressHandle.style.transform = `translateX(${position}px)`
+  }
+
   render() {
     const { song, playerState, levels, songTime, songDuration, actions } = this.props
 
     const description = `This cover of Jonathan Coulton's "Still Alive" is generated on-the-fly by the following code:`
     const compMonth = 'December 2015';
     const endDate = 'December 31st';
+
+    const songPercent = 100 * (songTime / songDuration)
 
     let playButton
     if (playerState === playbackStates.PLAYING) {
@@ -46,8 +76,10 @@ class App extends Component {
             </div>
           </div>
           <div className="progress">
-            <div className="container">
-              <div className="filled" style={{width: `${100 * (songTime / songDuration)}%`}} />
+            <div ref="progress" className="container">
+              <div className="filled" style={{width: songDuration && `${songPercent}%`}} />
+              <div className="duration">{msToTimeString(songDuration)}</div>
+              <div ref="progressHandle" className="handle">{msToTimeString(songTime)}</div>
             </div>
           </div>
         </div>
@@ -105,15 +137,15 @@ App.propTypes = {
   song: PropTypes.object.isRequired,
   playerState: PropTypes.oneOf(Object.keys(playbackStates)),
   levels: PropTypes.object.isRequired,
-  songTime: PropTypes.number.isRequired,
-  songDuration: PropTypes.number.isRequired,
+  songTime: PropTypes.number,
+  songDuration: PropTypes.number,
 }
 
 function mapStateToProps(state) {
   const songKey = state.metadata.current
   const player = state.player
-  const songTime = state.now - player.startTime
   const songDuration = state.playerMetrics.songDuration
+  const songTime = clamp(0, player.startTime !== null ? state.now - player.startTime : player.pauseTime, songDuration)
   return {
     song: state.metadata.songs.get(songKey),
     playerState: player.state,

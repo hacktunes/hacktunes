@@ -29,6 +29,7 @@ const StateRecord = Immutable.Record({
 })
 
 const TrackRecord = Immutable.Record({
+  fetched: false,
   loading: Immutable.Set(),
   module: null,
   resources: Immutable.Map(),
@@ -54,6 +55,7 @@ function track(state = TrackRecord(), action) {
     case LOAD_TRACK_START:
       const resources = Immutable.fromJS(action.resources, (k, v) => k ? TrackResourceRecord(v) : v)
       return state.merge({
+        fetched: true,
         loading: resources.valueSeq().map(res => res.get('url')).toSet(),
         resources
       })
@@ -105,7 +107,7 @@ export default function player(state = StateRecord(), action) {
 
         if (finished) {
           mutState.set('loaded', true)
-          if (state.state === PLAYING) {
+          if (state.state === PLAYING && state.startTime === null) {
             mutState.set('startTime', performance.now())
           }
         }

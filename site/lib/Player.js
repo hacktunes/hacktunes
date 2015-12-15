@@ -41,7 +41,7 @@ export default class Player {
     // create new tracks
     if (state.loaded) {
       for (let [ trackKey, track ] of tracks) {
-        if (!this.tracks.has(trackKey)) {
+        if (!this.tracks.has(trackKey) && track.fetched) {
           this.tracks.set(trackKey, this._createTrack(trackKey, state, track))
         }
       }

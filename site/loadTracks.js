@@ -1,4 +1,4 @@
-import { setAllTracksStart, setTrack } from './actions/player'
+import { setAllTracksStart, loadTrack } from './actions/player'
 
 function _loadTracks(store) {
   const state = store.getState().player.tracks
@@ -10,10 +10,7 @@ function _loadTracks(store) {
     const songKey = parts[1]
     const trackKey = parts[2]
     const trackModule = trackRequire(name)
-    if (trackModule !== state.getIn([songKey, trackKey, 'module'])) {
-      store.dispatch(setTrack(songKey, trackKey, trackModule))
-      // FIXME: re-fetch?
-    }
+    store.dispatch(loadTrack(songKey, trackKey, trackModule))
   })
   return trackRequire
 }

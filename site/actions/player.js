@@ -13,6 +13,16 @@ export function setTrack(songKey, trackKey, module) {
   return { type: types.SET_TRACK, songKey, trackKey, module }
 }
 
+export function loadTrack(songKey, trackKey, module) {
+  return (dispatch, getState) => {
+    dispatch(setTrack(songKey, trackKey, module))
+    const state = getState().player
+    if (state.song === songKey && state.loaded) {
+      dispatch(fetchTrack(songKey, trackKey))
+    }
+  }
+}
+
 export function fetchSong() {
   return (dispatch, getState) => {
     const state = getState().player

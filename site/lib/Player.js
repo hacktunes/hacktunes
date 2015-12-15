@@ -85,7 +85,7 @@ export default class Player {
         // synchronize MIDI player state
         if (state.state === PLAYING && state.loaded) {
           midiPlayer.stop()
-          midiPlayer.play()
+          midiPlayer.play(this._handleMIDIEnd.bind(this))
           midiPlayer.startTime = state.startTime
         } else {
           midiPlayer.stop()
@@ -194,5 +194,15 @@ export default class Player {
     }
 
     this.actions.updateTrackLevels(trackKey, levels)
+  }
+
+  _handleMIDIEnd(trackKey, ev) {
+    for (let [ , midiPlayer ] of this.midiPlayers) {
+      if (midiPlayer.position !== 0) {
+        return
+      }
+    }
+
+    this.actions.playbackFinish()
   }
 }

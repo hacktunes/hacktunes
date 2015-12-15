@@ -10,6 +10,7 @@ import {
   START_PLAYBACK,
   PAUSE_PLAYBACK,
   SEEK_PLAYBACK,
+  PLAYBACK_FINISH,
 } from '../constants/actionTypes'
 import {
   PLAYING,
@@ -153,6 +154,13 @@ export default function player(state = StateRecord(), action) {
           pauseTime: null,
         })
       }
+
+    case PLAYBACK_FINISH:
+      return state.merge({
+        state: STOPPED,
+        startTime: null,
+        pauseTime: null,
+      })
 
     default:
       return state

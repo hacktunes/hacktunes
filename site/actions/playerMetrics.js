@@ -7,3 +7,7 @@ export function playerUpdateFinish(duration) {
 export function updateTrackLevels(trackKey, levels) {
   return { type: types.UPDATE_TRACK_LEVELS, trackKey, levels }
 }
+
+export function playbackFinish() {
+  return { type: types.PLAYBACK_FINISH }
+}

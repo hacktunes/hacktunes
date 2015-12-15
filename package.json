@@ -21,7 +21,8 @@
     "react-redux": "~4.0.0",
     "midifile": "~1.0.2",
     "midievents": "~1.0.0",
-    "midiplayer": "~0.0.2"
+    "midiplayer": "~0.0.2",
+    "reset.css": "~2.0.2"
   },
   "devDependencies": {
     "glob": "~6.0.1",
@@ -40,7 +41,9 @@
     "style-loader": "~0.13.0",
     "css-loader": "~0.23.0",
     "less-loader": "~2.2.2",
+    "react-hot-loader": "~1.3.0",
     "autoprefixer-loader": "~3.1.0",
+    "less": "~2.5.3",
     "static-site-generator-webpack-plugin": "~1.3.0",
     "eslint": "~1.10.3",
     "eslint-plugin-react": "~3.11.2",

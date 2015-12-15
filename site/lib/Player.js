@@ -84,9 +84,11 @@ export default class Player {
       } else {
         // synchronize MIDI player state
         if (state.state === PLAYING && state.loaded) {
-          midiPlayer.stop()
-          midiPlayer.play(this._handleMIDIEnd.bind(this))
-          midiPlayer.startTime = state.startTime
+          if (midiPlayer.startTime !== state.startTime) {
+            midiPlayer.stop()
+            midiPlayer.play(this._handleMIDIEnd.bind(this))
+            midiPlayer.startTime = state.startTime
+          }
         } else {
           midiPlayer.stop()
         }

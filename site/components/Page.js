@@ -7,11 +7,11 @@ export default function Page({title, html, scriptHash, cssName}) {
         <meta charSet="utf-8" />
         <title>{title}</title>
         <link rel="icon" href={require('../static/favicon.png')} sizes="32x32" />
-        {cssName && <link rel="stylesheet" type="text/css" id="css" href={'/' + cssName} />}
+        {cssName && <link rel="stylesheet" type="text/css" id="css" href={cssName} />}
       </head>
       <body>
         <div id="app" dangerouslySetInnerHTML={html} />
-        <script src={'/main.' + scriptHash + '.js'} />
+        <script src={'main.' + scriptHash + '.js'} />
       </body>
     </html>
   )

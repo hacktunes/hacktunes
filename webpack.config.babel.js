@@ -10,7 +10,6 @@ const config = {
   output: {
     filename: 'main.[hash].js',
     path: path.join(__dirname, 'build'),
-    publicPath: '/',
     libraryTarget: 'umd'
   },
 

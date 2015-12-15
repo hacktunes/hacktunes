@@ -21,6 +21,7 @@ class App extends Component {
   render() {
     const { song, playerState, levels, songTime, songDuration, grabbing, seekSliderTime, actions } = this.props
 
+    const repoLink = 'https://github.com/hacktunes/hacktunes'
     const description = `This cover of Jonathan Coulton's "Still Alive" is generated on-the-fly by the following code:`
     const compMonth = 'December 2015';
     const endDate = 'December 31st';
@@ -45,7 +46,7 @@ class App extends Component {
                 <div className="type">hacktun.es</div>
               </a>
               <a href="FIXME" className="whats-this">what's this?</a>
-              <a href="FIXME" className="fork">fork on GitHub</a>
+              <a href={repoLink} className="fork">fork on GitHub</a>
             </header>
             <div className="player">
               <div className="controls">
@@ -120,7 +121,7 @@ class App extends Component {
           </a>
           <footer>
             <a href="FIXME">about</a>
-            <a href="FIXME">source code</a>
+            <a href={repoLink}>source code</a>
             <a href="FIXME">community chat</a>
           </footer>
         </div>

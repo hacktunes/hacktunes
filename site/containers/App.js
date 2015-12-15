@@ -73,7 +73,7 @@ class App extends Component {
           </div>
         </div>
         <div className="song-description">
-          {description}
+          hacktun.es is currently under construction. please check back soon for more info!
         </div>
         <div className="track-list">
           {song.tracks.map((track, trackKey) => {

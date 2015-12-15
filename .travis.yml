@@ -1,0 +1,15 @@
+language: node_js
+
+node_js:
+  - "5.2"
+
+cache:
+  directories:
+    - node_modules
+    - meta
+
+script:
+  - NODE_ENV=production npm run build
+
+after_success:
+  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && ./scripts/deploy.sh

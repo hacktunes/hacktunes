@@ -42,6 +42,7 @@ export default function metadata(state = StateRecord(), action) {
         return v
       })
       return state.mergeDeep(metadata)
+
     default:
       return state
   }

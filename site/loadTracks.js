@@ -1,8 +1,7 @@
-import { setAllTracksStart, loadTrack } from './actions/player'
+import { loadTrack } from './actions/player'
 
 function _loadTracks(store) {
   const state = store.getState().player.tracks
-  store.dispatch(setAllTracksStart())
 
   const trackRequire = require.context('../songs/', true, /index.js$/)
   trackRequire.keys().forEach(name => {

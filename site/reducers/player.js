@@ -1,7 +1,6 @@
 import Immutable from 'immutable'
 import {
   SET_SONG,
-  SET_ALL_TRACKS_START,
   SET_TRACK,
   LOAD_TRACK_START,
   LOAD_RESOURCE_START,
@@ -68,11 +67,6 @@ export default function player(state = StateRecord(), action) {
       return state.merge({
         song: action.songKey,
         loaded: false,
-      })
-
-    case SET_ALL_TRACKS_START:
-      return state.merge({
-        tracks: Immutable.Map(),
       })
 
     case SET_TRACK:

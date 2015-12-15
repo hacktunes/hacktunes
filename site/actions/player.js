@@ -5,18 +5,17 @@ export function setSong(songKey) {
   return { type: types.SET_SONG, songKey }
 }
 
-export function setAllTracksStart() {
-  return { type: types.SET_ALL_TRACKS_START }
-}
-
 export function setTrack(songKey, trackKey, module) {
   return { type: types.SET_TRACK, songKey, trackKey, module }
 }
 
 export function loadTrack(songKey, trackKey, module) {
   return (dispatch, getState) => {
-    dispatch(setTrack(songKey, trackKey, module))
     const state = getState().player
+    if (module === state.getIn([songKey, trackKey, 'module'])) {
+      return
+    }
+    dispatch(setTrack(songKey, trackKey, module))
     if (state.song === songKey && state.loaded) {
       dispatch(fetchTrack(songKey, trackKey))
     }

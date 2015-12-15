@@ -18,6 +18,7 @@ git remote add dest "https://${GH_TOKEN}@${GH_REF}" > /dev/null 2>&1
 git fetch --depth=1 dest gh-pages > /dev/null 2>&1
 git reset dest/gh-pages
 
-git add .
+echo "hacktun.es" > CNAME
+git add -A .
 git commit -m "Auto-build of ${REV}"
 git push dest HEAD:gh-pages > /dev/null 2>&1

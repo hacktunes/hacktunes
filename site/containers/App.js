@@ -17,6 +17,8 @@ function msToTimeString(ms) {
   return `${minutes}:${remSeconds < 10 ? '0' : ''}${remSeconds}`
 }
 
+const chatLink = 'https://euphoria.io/room/hacktunes'
+
 class App extends Component {
   render() {
     const { song, playerState, levels, songTime, songDuration, grabbing, seekSliderTime, actions } = this.props
@@ -122,7 +124,7 @@ class App extends Component {
           <footer>
             <a href="FIXME">about</a>
             <a href={repoLink}>source code</a>
-            <a href="FIXME">community chat</a>
+            <a href={chatLink}>community chat</a>
           </footer>
         </div>
       </div>

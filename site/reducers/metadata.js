@@ -13,12 +13,18 @@ const SongRecord = Immutable.Record({
   description: null,
   projectName: null,
   projectEnd: null,
+  credits: Immutable.Map(),
   tracks: Immutable.Map(),
 })
 
 const AuthorRecord = Immutable.Record({
   name: null,
   email: null,
+  url: null,
+})
+
+const CreditRecord = Immutable.Record({
+  name: null,
   url: null,
 })
 
@@ -36,6 +42,10 @@ export default function metadata(state = StateRecord(), action) {
       const metadata = Immutable.fromJS(action.metadata, (k, v) => {
         if (k === 'author') {
           return AuthorRecord(v)
+        } else if (k === 'credits') {
+          return Immutable.Map(v)
+        } else if (v.has('name') && v.has('url')) {
+          return CreditRecord(v)
         } else if (v.has('tracks')) {
           return SongRecord(v)
         } else if (v.has('main')) {

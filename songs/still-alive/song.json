@@ -2,5 +2,19 @@
   "title": "Still Alive",
   "description": "This cover of Jonathan Coulton's \"Still Alive\" is generated on-the-fly by the following code:",
   "projectName": "December 2015",
-  "projectEnd": "December 31st"
+  "projectEnd": "December 31st",
+  "credits": {
+    "song": {
+      "name": "Jonathan Coulton / Valve",
+      "url": "http://www.valvesoftware.com/games/portal.html"
+    },
+    "midi": {
+      "name": "Sebastian Wolff",
+      "url": "http://www.valvesoftware.com/games/portal.html"
+    },
+    "art": {
+      "name": "Thales Cardozo",
+      "url": "https://masteravatar.deviantart.com/art/GladOS-Portal-477250762"
+    }
+  }
 }

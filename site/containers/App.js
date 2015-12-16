@@ -108,6 +108,14 @@ class App extends Component {
             )
           }).valueSeq()}
         </div>
+        <div className="credits">
+          {song.credits.map((credit, category) =>
+            <div key={category} className="credit">
+              <span className="category">{category}</span>
+              <a className="author" href={credit.url}>{credit.name}</a>
+            </div>
+          ).valueSeq()}
+        </div>
         <div className="stick-bottom">
           <a href="FIXME" className="add-promo">
             <div className="add-icon" />

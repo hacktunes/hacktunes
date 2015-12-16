@@ -17,13 +17,13 @@ function msToTimeString(ms) {
   return `${minutes}:${remSeconds < 10 ? '0' : ''}${remSeconds}`
 }
 
+const repoLink = 'https://github.com/hacktunes/hacktunes'
 const chatLink = 'https://euphoria.io/room/hacktunes'
 
 class App extends Component {
   render() {
     const { song, playerState, levels, songTime, songDuration, grabbing, seekSliderTime, actions } = this.props
 
-    const repoLink = 'https://github.com/hacktunes/hacktunes'
     const description = `This cover of Jonathan Coulton's "Still Alive" is generated on-the-fly by the following code:`
     const compMonth = 'December 2015';
     const endDate = 'December 31st';

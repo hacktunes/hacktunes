@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import classNames from 'classnames'
+import shallowCompare from 'react-addons-shallow-compare'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as playbackStates from '../constants/playbackStates'
@@ -22,6 +23,10 @@ const repoLink = 'https://github.com/hacktunes/hacktunes'
 const chatLink = 'https://euphoria.io/room/hacktunes'
 
 class App extends Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState)
+  }
+
   render() {
     const { song, playerState, levels, songTime, songDuration, grabbing, seekSliderTime, songStyle, actions } = this.props
 
@@ -130,7 +135,7 @@ class App extends Component {
             <a href={chatLink}>community chat</a>
           </footer>
         </div>
-        <style dangerouslySetInnerHTML={songStyle} />
+        <style dangerouslySetInnerHTML={{__html: songStyle}} />
       </div>
     )
   }
@@ -144,7 +149,7 @@ App.propTypes = {
   songDuration: PropTypes.number,
   seekSliderTime: PropTypes.number,
   grabbing: PropTypes.bool,
-  songStyle: PropTypes.shape({__html: PropTypes.string}).isRequired,
+  songStyle: PropTypes.string.isRequired,
 }
 
 function mapStateToProps(state) {
@@ -153,7 +158,7 @@ function mapStateToProps(state) {
   const songDuration = state.playerMetrics.songDuration
   const songTime = clamp(0, player.startTime !== null ? state.now - player.startTime : player.pauseTime, songDuration)
   const seekSliderTime = state.ui.seekSliderDragTime !== null ? state.ui.seekSliderDragTime : songTime
-  const songStyle = {__html: songStyleRequire(`./${songKey}/song.less`).toString()}
+  const songStyle = songStyleRequire(`./${songKey}/song.less`).toString()
   return {
     song: state.metadata.songs.get(songKey),
     playerState: player.state,

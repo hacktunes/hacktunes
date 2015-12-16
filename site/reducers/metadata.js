@@ -11,6 +11,8 @@ const StateRecord = Immutable.Record({
 const SongRecord = Immutable.Record({
   title: 'Untitled Song',
   description: null,
+  projectName: null,
+  projectEnd: null,
   tracks: Immutable.Map(),
 })
 

@@ -24,10 +24,6 @@ class App extends Component {
   render() {
     const { song, playerState, levels, songTime, songDuration, grabbing, seekSliderTime, actions } = this.props
 
-    const description = `This cover of Jonathan Coulton's "Still Alive" is generated on-the-fly by the following code:`
-    const compMonth = 'December 2015';
-    const endDate = 'December 31st';
-
     const songPercent = 100 * (songTime / songDuration)
 
     let playButton
@@ -54,7 +50,7 @@ class App extends Component {
               <div className="controls">
                 {playButton}
                 <div className="info">
-                  <div className="comp">{compMonth}</div>
+                  <div className="project-name">{song.projectName}</div>
                   <div className="title">{song.title}</div>
                 </div>
               </div>
@@ -74,9 +70,7 @@ class App extends Component {
             </div>
           </div>
         </div>
-        <div className="song-description">
-          hacktun.es is currently under construction. please check back soon for more info!
-        </div>
+        <div className="song-description">{song.description}</div>
         <div className="track-list">
           {song.tracks.map((track, trackKey) => {
             const trackLevels = levels.get(trackKey)
@@ -118,7 +112,7 @@ class App extends Component {
             <div className="add-icon" />
             <div className="msg">
               <span className="title">Add your own track to "{song.title}"</span>
-              <span className="details">Submissions end {endDate}.</span>
+              <span className="details">Submissions end {song.projectEnd}.</span>
             </div>
           </a>
           <footer>

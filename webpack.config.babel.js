@@ -24,6 +24,12 @@ const config = {
       {
         test: /\.less$/,
         loader: 'css!autoprefixer!less',
+        include: path.resolve(__dirname, 'site'),
+      },
+      {
+        test: /\.less$/,
+        loader: 'css!autoprefixer!less',
+        include: path.resolve(__dirname, 'songs'),
       },
       {
         test: /\.js$/,
@@ -39,7 +45,7 @@ const config = {
         loader: 'url',
       },
       {
-        test: /\/avatar\/.*\.png$/,
+        test: /.png$/,
         loader: 'file?name=[name].[hash].[ext]',
       },
       {

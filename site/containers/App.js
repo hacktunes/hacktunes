@@ -8,6 +8,7 @@ import Slider from '../components/Slider'
 import Levels from '../components/Levels'
 import clamp from '../lib/clamp'
 
+const songStyleRequire = require.context('../../songs', true, /.less$/)
 const avatarRequire = require.context('../../meta/avatar', false, /.png$/)
 
 function msToTimeString(ms) {
@@ -22,7 +23,7 @@ const chatLink = 'https://euphoria.io/room/hacktunes'
 
 class App extends Component {
   render() {
-    const { song, playerState, levels, songTime, songDuration, grabbing, seekSliderTime, actions } = this.props
+    const { song, playerState, levels, songTime, songDuration, grabbing, seekSliderTime, songStyle, actions } = this.props
 
     const songPercent = 100 * (songTime / songDuration)
 
@@ -121,6 +122,7 @@ class App extends Component {
             <a href={chatLink}>community chat</a>
           </footer>
         </div>
+        <style dangerouslySetInnerHTML={songStyle} />
       </div>
     )
   }
@@ -134,6 +136,7 @@ App.propTypes = {
   songDuration: PropTypes.number,
   seekSliderTime: PropTypes.number,
   grabbing: PropTypes.bool,
+  songStyle: PropTypes.shape({__html: PropTypes.string}).isRequired,
 }
 
 function mapStateToProps(state) {
@@ -142,6 +145,7 @@ function mapStateToProps(state) {
   const songDuration = state.playerMetrics.songDuration
   const songTime = clamp(0, player.startTime !== null ? state.now - player.startTime : player.pauseTime, songDuration)
   const seekSliderTime = state.ui.seekSliderDragTime !== null ? state.ui.seekSliderDragTime : songTime
+  const songStyle = {__html: songStyleRequire(`./${songKey}/song.less`).toString()}
   return {
     song: state.metadata.songs.get(songKey),
     playerState: player.state,
@@ -150,6 +154,7 @@ function mapStateToProps(state) {
     songDuration,
     seekSliderTime,
     grabbing: state.ui.grabbing,
+    songStyle,
   }
 }
 

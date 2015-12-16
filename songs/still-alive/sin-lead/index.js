@@ -6,11 +6,13 @@ import {
 export function create({ transport, res, ctx, out }) {
   const notes = {}
   const gain = ctx.createGain()
-  gain.gain.value = .15
+  gain.gain.value = .35
   gain.connect(out)
 
   const attack = .005
-  const release = .25
+  const decay = .05
+  const sustain = .35
+  const release = .5
   transport.playMIDI(res.midi, ev => {
     if (ev.subtype === EVENT_MIDI_NOTE_ON) {
       const osc = ctx.createOscillator()
@@ -19,6 +21,7 @@ export function create({ transport, res, ctx, out }) {
       osc.frequency.value = ev.frequency * 2
       noteGain.gain.setValueAtTime(0, ev.time)
       noteGain.gain.linearRampToValueAtTime(1, ev.time + attack)
+      noteGain.gain.linearRampToValueAtTime(sustain, ev.time + attack + decay)
       osc.start(ev.time)
       osc.connect(noteGain)
       noteGain.connect(gain)
@@ -28,7 +31,8 @@ export function create({ transport, res, ctx, out }) {
         return
       }
       const { osc, noteGain } = notes[ev.note]
-      noteGain.gain.setValueAtTime(1, ev.time)
+      noteGain.gain.cancelScheduledValues(ev.time)
+      noteGain.gain.setValueAtTime(sustain, ev.time)
       noteGain.gain.linearRampToValueAtTime(0, ev.time + release)
       osc.stop(ev.time + release)
       setTimeout(function() {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 
 export default function Page({title, html, scriptHash, cssName}) {
   return (
@@ -18,8 +18,8 @@ export default function Page({title, html, scriptHash, cssName}) {
 }
 
 Page.propTypes = {
-  title: React.PropTypes.string.isRequired,
-  html: React.PropTypes.object.isRequired,
-  scriptHash: React.PropTypes.string.isRequired,
-  cssName: React.PropTypes.string,
+  title: PropTypes.string.isRequired,
+  html: PropTypes.object.isRequired,
+  scriptHash: PropTypes.string.isRequired,
+  cssName: PropTypes.string,
 }

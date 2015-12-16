@@ -6,6 +6,7 @@ import * as playerMetricsActions from './actions/playerMetrics'
 import * as metadataActions from './actions/metadata'
 import { bindActionCreators } from 'redux'
 import Player from './lib/Player'
+import loadGA from './lib/loadGA'
 
 export default function client(store, view) {
   if (process.env.NODE_ENV !== 'production') {
@@ -14,6 +15,10 @@ export default function client(store, view) {
     // with the static page build (document not defined).
     require('webpack-dev-server/client?http://0.0.0.0:8080')
     require('webpack/hot/dev-server')
+  } else {
+    if (process.env.GA_ID) {
+      loadGA(process.env.GA_ID)
+    }
   }
 
   const ui = ReactDOM.render(view, document.getElementById('app'))

@@ -47,6 +47,15 @@ export default class Player {
       }
     }
 
+    // halt / resume analyzers
+    for (let [ , trackState ] of this.tracks) {
+      if (state.state === PLAYING) {
+        trackState.analyzerNode.connect(this.ctx.destination)
+      } else {
+        trackState.analyzerNode.disconnect()
+      }
+    }
+
     // take stock of needed MIDI players
     var usedMIDI = new Set()
     for (let [ trackKey, trackState ] of this.tracks) {

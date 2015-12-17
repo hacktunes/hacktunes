@@ -23,13 +23,13 @@ const config = {
     loaders: [
       {
         test: /\.less$/,
-        loader: 'css!autoprefixer!less',
         include: path.resolve(__dirname, 'site'),
+        loader: 'css!autoprefixer!less',
       },
       {
         test: /\.less$/,
-        loader: 'css!autoprefixer!less',
         include: path.resolve(__dirname, 'songs'),
+        loader: 'css!autoprefixer!less',
       },
       {
         test: /\.js$/,

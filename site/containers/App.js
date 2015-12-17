@@ -19,8 +19,8 @@ function msToTimeString(ms) {
   return `${minutes}:${remSeconds < 10 ? '0' : ''}${remSeconds}`
 }
 
-const repoLink = 'https://github.com/hacktunes/hacktunes'
-const chatLink = 'https://euphoria.io/room/hacktunes'
+const repoURL = 'https://github.com/hacktunes/hacktunes'
+const chatURL = 'https://euphoria.io/room/hacktunes'
 
 class App extends Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -50,7 +50,7 @@ class App extends Component {
                 <div className="type">hacktun.es</div>
               </a>
               <a href="FIXME" className="whats-this">what's this?</a>
-              <a href={repoLink} className="fork">fork on GitHub</a>
+              <a href={repoURL} className="fork">fork on GitHub</a>
             </header>
             <div className="player">
               <div className="controls">
@@ -131,8 +131,8 @@ class App extends Component {
           </a>
           <footer>
             <a href="FIXME">about</a>
-            <a href={repoLink}>source code</a>
-            <a href={chatLink}>community chat</a>
+            <a href={repoURL}>source code</a>
+            <a href={chatURL}>community chat</a>
           </footer>
         </div>
         <style dangerouslySetInnerHTML={{__html: songStyle}} />

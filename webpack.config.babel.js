@@ -49,10 +49,6 @@ const config = {
         loader: 'file?name=[name].[hash].[ext]',
       },
       {
-        test: /\/static\/favicon\.png$/,
-        loader: 'file?name=[name].[ext]',
-      },
-      {
         test: /\.mid$/,
         loader: 'file?name=[path][name].[hash].[ext]',
       },

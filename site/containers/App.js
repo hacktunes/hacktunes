@@ -28,7 +28,7 @@ class App extends Component {
   }
 
   render() {
-    const { song, playerState, levels, songTime, songDuration, grabbing, seekSliderTime, songStyle, actions } = this.props
+    const { songKey, song, playerState, levels, songTime, songDuration, grabbing, seekSliderTime, songStyle, actions } = this.props
 
     const songPercent = 100 * (songTime / songDuration)
 
@@ -85,6 +85,7 @@ class App extends Component {
               const maxLevel = clamp(0, (trackLevels.leftMax + trackLevels.rightMax) / 2, 1)
               avatarScale = 1 + .35 * maxLevel
             }
+            const codeURL = `${repoURL}/blob/master/songs/${songKey}/${trackKey}/`
             return (
               <div key={trackKey} className="track">
                 <div className="container">
@@ -100,7 +101,7 @@ class App extends Component {
                     <div className="description">{track.description}</div>
                   </div>
                   <div className="spacer" />
-                  <a href="FIXME" className="github-link" />
+                  <a href={codeURL} className="github-link" />
                   <div className="active-toggle toggle on" />
                   <div className="levels-container">
                     <Levels levels={trackLevels} />
@@ -142,6 +143,7 @@ class App extends Component {
 }
 
 App.propTypes = {
+  songKey: PropTypes.string.isRequired,
   song: PropTypes.object.isRequired,
   playerState: PropTypes.oneOf(Object.keys(playbackStates)),
   levels: PropTypes.object.isRequired,
@@ -160,6 +162,7 @@ function mapStateToProps(state) {
   const seekSliderTime = state.ui.seekSliderDragTime !== null ? state.ui.seekSliderDragTime : songTime
   const songStyle = songStyleRequire(`./${songKey}/song.less`).toString()
   return {
+    songKey,
     song: state.metadata.songs.get(songKey),
     playerState: player.state,
     levels: state.playerMetrics.trackLevels,

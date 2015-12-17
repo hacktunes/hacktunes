@@ -21,6 +21,7 @@ function msToTimeString(ms) {
 
 const repoURL = 'https://github.com/hacktunes/hacktunes'
 const aboutURL = repoURL + '#about'
+const gettingStartedURL = repoURL + '#getting-started'
 const chatURL = 'https://euphoria.io/room/hacktunes'
 
 class App extends Component {
@@ -124,7 +125,7 @@ class App extends Component {
           ).valueSeq()}
         </div>
         <div className="stick-bottom">
-          <a href="FIXME" className="add-promo">
+          <a href={gettingStartedURL} className="add-promo">
             <div className="add-icon" />
             <div className="msg">
               <span className="title">Add your own track to "{song.title}"</span>

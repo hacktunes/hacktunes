@@ -30,6 +30,8 @@ Everyone is welcome to contribute!
 
 When we merge your commit, your track will automatically go live on [hacktun.es](http://hacktun.es).
 
+---
+
 ## API
 
 :construction: Hacktunes is in early development. Need something that isn't listed here? Please [file an issue](https://github.com/hacktunes/hacktunes/issues/new) for discussion.

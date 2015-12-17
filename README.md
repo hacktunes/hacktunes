@@ -1,4 +1,4 @@
-<img id="about" src="https://raw.githubusercontent.com/hacktunes/hacktunes/master/art/logotype-color.png" alt="hacktun.es" height="75" />
+<a href="http://hacktun.es"><img id="about" src="https://raw.githubusercontent.com/hacktunes/hacktunes/master/art/logotype-color.png" alt="hacktun.es" height="75" /></a>
 
 Hacktunes is a monthly collaborative music programming project. Each month, we pick a song to cover using the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API). Anyone can contribute tracks (written in JavaScript/ES6) which generate a part of the song in real-time. We mash all of these tracks together into a combined performance, creating a [Hacktune](hacktun.es)!
 

@@ -20,6 +20,7 @@ function msToTimeString(ms) {
 }
 
 const repoURL = 'https://github.com/hacktunes/hacktunes'
+const aboutURL = repoURL + '#about'
 const chatURL = 'https://euphoria.io/room/hacktunes'
 
 class App extends Component {
@@ -49,7 +50,7 @@ class App extends Component {
                 <div className="logo" />
                 <div className="type">hacktun.es</div>
               </a>
-              <a href="FIXME" className="whats-this">what's this?</a>
+              <a href={aboutURL} className="whats-this">what's this?</a>
               <a href={repoURL} className="fork">fork on GitHub</a>
             </header>
             <div className="player">
@@ -131,7 +132,7 @@ class App extends Component {
             </div>
           </a>
           <footer>
-            <a href="FIXME">about</a>
+            <a href={aboutURL}>about</a>
             <a href={repoURL}>source code</a>
             <a href={chatURL}>community chat</a>
           </footer>

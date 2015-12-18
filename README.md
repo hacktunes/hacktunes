@@ -40,22 +40,27 @@ When we merge your commit, your track will automatically go live on [hacktun.es]
 
 Your track is a module consisting of two functions: `load`, and `create`.
 
-### `load({ loadMIDI })`
+### `load({ loadAudio, loadMIDI })`
 
-Declare resources your track needs to fetch here.
+Declare resources your track needs to fetch here. Use the `require` function to refer to file paths relative to the current module.
 
 Return an object mapping resource names to resources (see below).
 
 #### `loadMIDI(url)`
 
-Fetch a MIDI file at the specified URL. Use the `require` function to refer to file paths relative to the current module.
+Fetch a MIDI file at the specified URL.
+
+#### `loadAudio(url)`
+
+Fetch and decode an audio file at the specified URL.
 
 #### Example:
 
 ```js
-export function load({ loadMIDI }) {
+export function load({ loadAudio, loadMIDI }) {
   return {
     midi: loadMIDI(require('../still-alive.mid')),
+    sample: loadMIDI(require('./meow.wav')),
   }
 }
 ```

@@ -1,5 +1,9 @@
 import * as types from '../constants/actionTypes'
-import { MIDI } from '../constants/resourceTypes'
+import { AUDIO, MIDI } from '../constants/resourceTypes'
+
+export function initAudioContext(ctx) {
+  return { type: types.INIT_AUDIO_CONTEXT, ctx }
+}
 
 export function setSong(songKey) {
   return { type: types.SET_SONG, songKey }
@@ -33,14 +37,26 @@ export function fetchSong() {
   }
 }
 
+function decodeAudioData(ctx, buffer) {
+  // wrap the callback API in a promise
+  return new Promise((resolve, reject) =>
+    ctx.decodeAudioData(buffer, resolve, reject))
+}
+
 export function fetchTrack(songKey, trackKey) {
   return (dispatch, getState) => {
-    const track = getState().player.tracks.getIn([ songKey, trackKey ])
+    const state = getState().player
+    const track = state.tracks.getIn([ songKey, trackKey ])
     const env = {
+      loadAudio(url) {
+        dispatch(fetchResource(url, AUDIO, buffer => decodeAudioData(state.ctx, buffer)))
+        return { url, type: AUDIO }
+      },
+
       loadMIDI(url) {
-        dispatch(fetchMIDI(url))
-        return { type: MIDI, url }
-      }
+        dispatch(fetchResource(url, MIDI))
+        return { url, type: MIDI }
+      },
     }
     const resources = track.module.load(env)
     dispatch(loadTrackStart(songKey, trackKey, resources))
@@ -51,15 +67,16 @@ export function loadTrackStart(songKey, trackKey, resources) {
   return { type: types.LOAD_TRACK_START, songKey, trackKey, resources }
 }
 
-export function fetchMIDI(url) {
+function fetchResource(url, resourceType, converter) {
   return (dispatch, getState) => {
     if (getState().player.resources.getIn([ url, 'loading' ])) {
       return
     }
-    dispatch(loadResourceStart(url, MIDI))
+    dispatch(loadResourceStart(url, resourceType))
     fetch(url)
         .then(response => response.arrayBuffer())
-        .then(buffer => dispatch(loadResourceSuccess(url, buffer)))
+        .then(converter)
+        .then(result => dispatch(loadResourceSuccess(url, result)))
         .catch(err => dispatch(loadResourceFailure(url, err)))
   }
 }

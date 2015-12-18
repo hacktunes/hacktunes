@@ -23,6 +23,9 @@ export default function client(store, view) {
 
   const ui = ReactDOM.render(view, document.getElementById('app'))
 
+  const ctx = new AudioContext()
+  store.dispatch(playerActions.initAudioContext(ctx))
+
   const player = new Player(bindActionCreators(playerEventsActions, store.dispatch))
   let lastPlayerState
   function updatePlayer() {

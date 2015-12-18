@@ -20,12 +20,13 @@ import MIDIPlayer from 'midiplayer'
 export default class Player {
   constructor(actions) {
     this.actions = actions
-    this.ctx = new AudioContext()
     this.tracks = new Map()
     this.midiPlayers = new Map()
   }
 
   update(state) {
+    this.ctx = state.ctx
+
     const tracks = state.tracks.get(state.song, Immutable.Map())
 
     // clean up removed/replaced tracks

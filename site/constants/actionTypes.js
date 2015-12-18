@@ -1,3 +1,5 @@
+export const INIT_AUDIO_CONTEXT = 'INIT_AUDIO_CONTEXT'
+
 export const CLOCK_TICK = 'CLOCK_TICK'
 
 export const SET_METADATA = 'SET_METADATA'

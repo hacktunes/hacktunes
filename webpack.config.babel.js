@@ -49,7 +49,7 @@ const config = {
         loader: 'file?name=[name].[hash].[ext]',
       },
       {
-        test: /\.mid$/,
+        test: /\.mid$|\.wav$|\.mp3$/,
         loader: 'file?name=[path][name].[hash].[ext]',
       },
     ]

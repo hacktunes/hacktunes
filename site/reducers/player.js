@@ -1,5 +1,6 @@
 import Immutable from 'immutable'
 import {
+  INIT_AUDIO_CONTEXT,
   SET_SONG,
   SET_TRACK,
   LOAD_TRACK_START,
@@ -18,6 +19,7 @@ import {
 } from '../constants/playbackStates'
 
 const StateRecord = Immutable.Record({
+  ctx: null,
   song: null,
   loaded: false,
   state: STOPPED,
@@ -63,6 +65,9 @@ function track(state = TrackRecord(), action) {
 
 export default function player(state = StateRecord(), action) {
   switch (action.type) {
+    case INIT_AUDIO_CONTEXT:
+      return state.set('ctx', action.ctx)
+
     case SET_SONG:
       return state.merge({
         song: action.songKey,

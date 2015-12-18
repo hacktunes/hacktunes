@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { clockTick } from './actions/clock'
 import * as playerActions from './actions/player'
-import * as playerMetricsActions from './actions/playerMetrics'
+import * as playerEventsActions from './actions/playerEvents'
 import * as metadataActions from './actions/metadata'
 import { bindActionCreators } from 'redux'
 import Player from './lib/Player'
@@ -23,7 +23,7 @@ export default function client(store, view) {
 
   const ui = ReactDOM.render(view, document.getElementById('app'))
 
-  const player = new Player(bindActionCreators(playerMetricsActions, store.dispatch))
+  const player = new Player(bindActionCreators(playerEventsActions, store.dispatch))
   let lastPlayerState
   function updatePlayer() {
     const newState = store.getState().player

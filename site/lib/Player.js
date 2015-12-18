@@ -28,10 +28,11 @@ export default class Player {
     this.ctx = state.ctx
 
     const tracks = state.tracks.get(state.song, Immutable.Map())
+    const playingTracks = tracks.filter(t => t.enabled)
 
     // clean up removed/replaced tracks
     for (let [ trackKey, trackState ] of this.tracks) {
-      if (!tracks.has(trackKey) || trackState.module !== tracks.get(trackKey).module) {
+      if (!playingTracks.has(trackKey) || trackState.module !== tracks.get(trackKey).module) {
         trackState.gainNode.disconnect()
         trackState.analyzerNode.disconnect()
         trackState.spyNode.disconnect()
@@ -41,7 +42,7 @@ export default class Player {
 
     // create new tracks
     if (state.loaded) {
-      for (let [ trackKey, track ] of tracks) {
+      for (let [ trackKey, track ] of playingTracks) {
         if (!this.tracks.has(trackKey) && track.fetched) {
           this.tracks.set(trackKey, this._createTrack(trackKey, state, track))
         }

@@ -7,6 +7,8 @@ import {
   LOAD_RESOURCE_START,
   LOAD_RESOURCE_SUCCESS,
   LOAD_RESOURCE_FAILURE,
+  ENABLE_TRACK,
+  DISABLE_TRACK,
   START_PLAYBACK,
   PAUSE_PLAYBACK,
   SEEK_PLAYBACK,
@@ -32,6 +34,7 @@ const StateRecord = Immutable.Record({
 const TrackRecord = Immutable.Record({
   fetched: false,
   loading: Immutable.Set(),
+  enabled: true,
   module: null,
   resources: Immutable.Map(),
 })
@@ -60,6 +63,12 @@ function track(state = TrackRecord(), action) {
         loading: resources.valueSeq().map(res => res.get('url')).toSet(),
         resources
       })
+
+    case ENABLE_TRACK:
+      return state.set('enabled', true)
+
+    case DISABLE_TRACK:
+      return state.set('enabled', false)
   }
 }
 
@@ -76,6 +85,8 @@ export default function player(state = StateRecord(), action) {
 
     case SET_TRACK:
     case LOAD_TRACK_START:
+    case ENABLE_TRACK:
+    case DISABLE_TRACK:
       const { songKey, trackKey } = action
       return state.updateIn([ 'tracks', songKey, trackKey ], value => track(value, action))
 

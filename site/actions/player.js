@@ -93,6 +93,22 @@ export function loadResourceFailure(url, error) {
   return { type: types.LOAD_RESOURCE_SUCCESS, url, error }
 }
 
+export function enableTrack(songKey, trackKey) {
+  return { type: types.ENABLE_TRACK, songKey, trackKey }
+}
+
+export function disableTrack(songKey, trackKey) {
+  return { type: types.DISABLE_TRACK, songKey, trackKey }
+}
+
+export function toggleTrack(songKey, trackKey) {
+  return (dispatch, getState) => {
+    const track = getState().player.tracks.getIn([ songKey, trackKey ])
+    const action = track.enabled ? disableTrack : enableTrack
+    dispatch(action(songKey, trackKey))
+  }
+}
+
 export function startPlayback() {
   return { type: types.START_PLAYBACK }
 }

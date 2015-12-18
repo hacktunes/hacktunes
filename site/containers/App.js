@@ -30,7 +30,7 @@ class App extends Component {
   }
 
   render() {
-    const { songKey, song, playerState, levels, songTime, songDuration, grabbing, seekSliderTime, songStyle, actions } = this.props
+    const { songKey, song, trackStates, playerState, levels, songTime, songDuration, grabbing, seekSliderTime, songStyle, actions } = this.props
 
     const songPercent = 100 * (songTime / songDuration)
 
@@ -81,6 +81,7 @@ class App extends Component {
         <div className="song-description">{song.description}</div>
         <div className="track-list">
           {song.tracks.map((track, trackKey) => {
+            const trackState = trackStates.get(trackKey)
             const trackLevels = levels.get(trackKey)
             let avatarScale = 1
             if (trackLevels) {
@@ -104,7 +105,10 @@ class App extends Component {
                   </div>
                   <div className="spacer" />
                   <a href={codeURL} className="github-link" />
-                  <div className="active-toggle toggle on" />
+                  <div
+                    className={classNames('active-toggle', 'toggle', trackState.enabled ? 'on' : 'off')}
+                    onClick={() => actions.toggleTrack(songKey, trackKey)}
+                  />
                   <div className="levels-container">
                     <Levels levels={trackLevels} />
                     <div className="range-slider fader">
@@ -147,6 +151,7 @@ class App extends Component {
 App.propTypes = {
   songKey: PropTypes.string.isRequired,
   song: PropTypes.object.isRequired,
+  trackStates: PropTypes.object.isRequired,
   playerState: PropTypes.oneOf(Object.keys(playbackStates)),
   levels: PropTypes.object.isRequired,
   songTime: PropTypes.number,
@@ -166,6 +171,7 @@ function mapStateToProps(state) {
   return {
     songKey,
     song: state.metadata.songs.get(songKey),
+    trackStates: player.tracks.get(songKey),
     playerState: player.state,
     levels: state.playerMetrics.trackLevels,
     songTime,

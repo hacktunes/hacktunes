@@ -3,6 +3,7 @@ import {
   fetchAndStartPlayback,
   pausePlayback,
   seekPlayback,
+  toggleTrack,
 } from './player'
 
 export function grabSlider(seekTime) {
@@ -25,4 +26,4 @@ export function releaseSeekSlider(seekTime) {
   }
 }
 
-export { fetchAndStartPlayback, pausePlayback }
+export { fetchAndStartPlayback, pausePlayback, toggleTrack }

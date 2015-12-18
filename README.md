@@ -38,7 +38,7 @@ When we merge your commit, your track will automatically go live on [hacktun.es]
 
 :zap: Prefer to read code? Here's an [annotated example](https://github.com/hacktunes/hacktunes/blob/master/songs/still-alive/sin-lead/index.js).
 
-Your track is a module consisting two functions: `load`, and `create`.
+Your track is a module consisting of two functions: `load`, and `create`.
 
 ### `load({ loadMIDI })`
 

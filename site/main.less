@@ -339,6 +339,16 @@ body {
     }
   }
 
+  .track-info, .avatar {
+    transition: opacity .15s ease-out;
+  }
+
+  .track.disabled {
+    .track-info, .avatar {
+      opacity: .5;
+    }
+  }
+
   .spacer {
     flex: 1;
   }

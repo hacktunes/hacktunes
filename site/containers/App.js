@@ -82,6 +82,7 @@ class App extends Component {
         <div className="track-list">
           {song.tracks.map((track, trackKey) => {
             const trackState = trackStates.get(trackKey)
+            const trackEnabled = trackState.enabled
             const trackLevels = levels.get(trackKey)
             let avatarScale = 1
             if (trackLevels) {
@@ -90,7 +91,7 @@ class App extends Component {
             }
             const codeURL = `${repoURL}/blob/master/songs/${songKey}/${trackKey}/`
             return (
-              <div key={trackKey} className="track">
+              <div key={trackKey} className={classNames('track', !trackEnabled && 'disabled')}>
                 <div className="container">
                   <div className="avatar" style={{transform: `scale(${avatarScale})`}}>
                     <img src={avatarRequire('./' + track.author.email + '.png')} alt="" />
@@ -106,7 +107,7 @@ class App extends Component {
                   <div className="spacer" />
                   <a href={codeURL} className="github-link" />
                   <div
-                    className={classNames('active-toggle', 'toggle', trackState.enabled ? 'on' : 'off')}
+                    className={classNames('active-toggle', 'toggle', trackEnabled ? 'on' : 'off')}
                     onClick={() => actions.toggleTrack(songKey, trackKey)}
                   />
                   <div className="levels-container">

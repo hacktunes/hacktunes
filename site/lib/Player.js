@@ -46,15 +46,15 @@ export default class Player {
         if (!this.tracks.has(trackKey) && track.fetched) {
           this.tracks.set(trackKey, this._createTrack(trackKey, state, track))
         }
-      }
-    }
 
-    // halt / resume analyzers
-    for (let [ , trackState ] of this.tracks) {
-      if (state.state === PLAYING) {
-        trackState.analyzerNode.connect(this.ctx.destination)
-      } else {
-        trackState.analyzerNode.disconnect()
+        const trackState = this.tracks.get(trackKey)
+
+        // halt / resume analyzers
+        if (state.state === PLAYING) {
+          trackState.analyzerNode.connect(this.ctx.destination)
+        } else {
+          trackState.analyzerNode.disconnect()
+        }
       }
     }
 

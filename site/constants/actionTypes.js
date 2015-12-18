@@ -3,9 +3,7 @@ export const INIT_AUDIO_CONTEXT = 'INIT_AUDIO_CONTEXT'
 export const CLOCK_TICK = 'CLOCK_TICK'
 
 export const SET_METADATA = 'SET_METADATA'
-
 export const SET_TRACK = 'SET_TRACK'
-
 export const SET_SONG = 'SET_SONG'
 
 export const LOAD_TRACK_START = 'LOAD_TRACK_START'

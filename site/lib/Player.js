@@ -22,27 +22,24 @@ export default class Player {
     this.actions = actions
     this.tracks = new Map()
     this.midiPlayers = new Map()
+    this._endTimeout = null
   }
 
   update(state) {
     this.ctx = state.ctx
 
     const tracks = state.tracks.get(state.song, Immutable.Map())
-    const playingTracks = tracks.filter(t => t.enabled)
 
     // clean up removed/replaced tracks
     for (let [ trackKey, trackState ] of this.tracks) {
-      if (!playingTracks.has(trackKey) || trackState.module !== tracks.get(trackKey).module) {
-        trackState.gainNode.disconnect()
-        trackState.analyzerNode.disconnect()
-        trackState.spyNode.disconnect()
-        this.tracks.delete(trackKey)
+      if (!tracks.has(trackKey) || trackState.module !== tracks.get(trackKey).module) {
+        this._removeTrack(trackKey)
       }
     }
 
     // create new tracks
     if (state.loaded) {
-      for (let [ trackKey, track ] of playingTracks) {
+      for (let [ trackKey, track ] of tracks) {
         if (!this.tracks.has(trackKey) && track.fetched) {
           this.tracks.set(trackKey, this._createTrack(trackKey, state, track))
         }
@@ -59,16 +56,16 @@ export default class Player {
     }
 
     // take stock of needed MIDI players
-    var usedMIDI = new Set()
+    var usedMIDI = new Map()
     for (let [ trackKey, trackState ] of this.tracks) {
       for (let [ midiURL, ] of trackState.midis) {
-        usedMIDI.add(midiURL)
+        usedMIDI.set(midiURL, (usedMIDI.get(midiURL) || 0) + 1)
       }
     }
 
     // create new MIDI players
     let songDuration = 0
-    for (let midiURL of usedMIDI) {
+    for (let [ midiURL, ] of usedMIDI) {
       if (!this.midiPlayers.has(midiURL)) {
         const resource = state.resources.get(midiURL)
         if (!resource.data) {
@@ -86,9 +83,30 @@ export default class Player {
       songDuration = Math.max(songDuration, midiDuration)
     }
 
-    this.timeOffset = performance.now() / 1000 - this.ctx.currentTime
+    const now = performance.now()
+
+    clearTimeout(this._endTimeout)
+    if (state.loaded) {
+      if (state.state === PLAYING) {
+        const remaining = songDuration - (now - state.startTime)
+        this._endTimeout = setTimeout(this.actions.playbackFinish, remaining)
+      }
+
+      // unload disabled tracks after loading MIDI files so that songDuration is
+      // calculated with full transport.
+      for (let [ trackKey, track ] of tracks) {
+        if (!track.enabled) {
+          const trackState = this._removeTrack(trackKey)
+          for (let [ midiURL, ] of trackState.midis) {
+            usedMIDI.set(midiURL, usedMIDI.get(midiURL) - 1)
+          }
+        }
+      }
+    }
+
+    this.timeOffset = now / 1000 - this.ctx.currentTime
     for (let [ midiURL, midiPlayer ] of this.midiPlayers) {
-      if (!usedMIDI.has(midiURL)) {
+      if (usedMIDI.get(midiURL) <= 0) {
         // remove unused MIDI players
         midiPlayer.stop()
         this.midiPlayers.delete(midiURL)
@@ -97,7 +115,7 @@ export default class Player {
         if (state.state === PLAYING && state.loaded) {
           if (midiPlayer.startTime !== state.startTime) {
             midiPlayer.stop()
-            midiPlayer.play(this._handleMIDIEnd.bind(this))
+            midiPlayer.play()
             midiPlayer.startTime = state.startTime
           }
         } else {
@@ -107,6 +125,18 @@ export default class Player {
     }
 
     this.actions.playerUpdateFinish(songDuration)
+  }
+
+  _removeTrack(trackKey) {
+    const trackState = this.tracks.get(trackKey)
+    if (!trackState) {
+      return
+    }
+    trackState.gainNode.disconnect()
+    trackState.analyzerNode.disconnect()
+    trackState.spyNode.disconnect()
+    this.tracks.delete(trackKey)
+    return trackState
   }
 
   _createTrack(trackKey, state, track) {
@@ -207,15 +237,5 @@ export default class Player {
     }
 
     this.actions.updateTrackLevels(trackKey, levels)
-  }
-
-  _handleMIDIEnd(trackKey, ev) {
-    for (let [ , midiPlayer ] of this.midiPlayers) {
-      if (midiPlayer.position !== 0) {
-        return
-      }
-    }
-
-    this.actions.playbackFinish()
   }
 }

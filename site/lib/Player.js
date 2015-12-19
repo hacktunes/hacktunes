@@ -23,17 +23,23 @@ export default class Player {
     this.actions = actions
     this.tracks = new Map()
     this.midiPlayers = new Map()
+    this._startTime = null
     this._endTimeout = null
   }
 
   update(state) {
     this.ctx = state.ctx
+    const didSeek = this._startTime !== state.startTime
+    this._startTime = state.startTime
 
+    const isPlaying = state.state === PLAYING
     const tracks = state.tracks.get(state.song, Immutable.Map())
 
     // clean up removed/replaced tracks
     for (let [ trackKey, trackState ] of this.tracks) {
-      if (!tracks.has(trackKey) || trackState.module !== tracks.get(trackKey).module) {
+      const trackRemoved = !tracks.has(trackKey)
+      const trackChanged = trackState.module !== tracks.get(trackKey).module
+      if (!isPlaying || didSeek || trackRemoved || trackChanged) {
         this._removeTrack(trackKey)
       }
     }
@@ -48,7 +54,7 @@ export default class Player {
         const trackState = this.tracks.get(trackKey)
 
         // halt / resume analyzers
-        if (state.state === PLAYING) {
+        if (isPlaying) {
           trackState.analyzerNode.connect(this.ctx.destination)
         } else {
           trackState.analyzerNode.disconnect()
@@ -88,7 +94,7 @@ export default class Player {
 
     clearTimeout(this._endTimeout)
     if (state.loaded) {
-      if (state.state === PLAYING) {
+      if (isPlaying) {
         const remaining = songDuration - (now - state.startTime)
         this._endTimeout = setTimeout(this.actions.playbackFinish, remaining)
       }
@@ -113,7 +119,7 @@ export default class Player {
         this.midiPlayers.delete(midiURL)
       } else {
         // synchronize MIDI player state
-        if (state.state === PLAYING && state.loaded) {
+        if (isPlaying && state.loaded) {
           if (midiPlayer.startTime !== state.startTime) {
             midiPlayer.stop()
             midiPlayer.play()

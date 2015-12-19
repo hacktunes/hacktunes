@@ -19,6 +19,7 @@ import MIDIPlayer from 'midiplayer'
 
 export default class Player {
   constructor(actions) {
+    this.ctx = null
     this.actions = actions
     this.tracks = new Map()
     this.midiPlayers = new Map()

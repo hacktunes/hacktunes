@@ -35,7 +35,7 @@ export default class Player {
     const isPlaying = state.state === PLAYING
     const tracks = state.tracks.get(state.song, Immutable.Map())
 
-    // clean up removed/replaced tracks
+    // Clean up removed/replaced tracks.
     for (let [ trackKey, trackState ] of this.tracks) {
       const trackRemoved = !tracks.has(trackKey)
       const trackChanged = trackState.module !== tracks.get(trackKey).module
@@ -44,7 +44,7 @@ export default class Player {
       }
     }
 
-    // create new tracks
+    // Create new tracks.
     if (state.loaded) {
       for (let [ trackKey, track ] of tracks) {
         if (!this.tracks.has(trackKey) && track.fetched) {
@@ -53,7 +53,7 @@ export default class Player {
 
         const trackState = this.tracks.get(trackKey)
 
-        // halt / resume analyzers
+        // Halt / resume analyzers.
         if (isPlaying) {
           trackState.analyzerNode.connect(this.ctx.destination)
         } else {
@@ -62,7 +62,7 @@ export default class Player {
       }
     }
 
-    // take stock of needed MIDI players
+    // Take stock of needed MIDI players.
     var usedMIDI = new Map()
     for (let [ trackKey, trackState ] of this.tracks) {
       for (let [ midiURL, ] of trackState.midis) {
@@ -70,7 +70,7 @@ export default class Player {
       }
     }
 
-    // create new MIDI players
+    // Create new MIDI players.
     let songDuration = 0
     for (let [ midiURL, ] of usedMIDI) {
       if (!this.midiPlayers.has(midiURL)) {
@@ -99,7 +99,7 @@ export default class Player {
         this._endTimeout = setTimeout(this.actions.playbackFinish, remaining)
       }
 
-      // unload disabled tracks after loading MIDI files so that songDuration is
+      // Unload disabled tracks after loading MIDI files so that songDuration is
       // calculated with full transport.
       for (let [ trackKey, track ] of tracks) {
         if (!track.enabled) {
@@ -114,11 +114,11 @@ export default class Player {
     this.timeOffset = now / 1000 - this.ctx.currentTime
     for (let [ midiURL, midiPlayer ] of this.midiPlayers) {
       if (usedMIDI.get(midiURL) <= 0) {
-        // remove unused MIDI players
+        // Remove unused MIDI players.
         midiPlayer.stop()
         this.midiPlayers.delete(midiURL)
       } else {
-        // synchronize MIDI player state
+        // Synchronize MIDI player state.
         if (isPlaying && state.loaded) {
           if (midiPlayer.startTime !== state.startTime) {
             midiPlayer.stop()
@@ -191,8 +191,9 @@ export default class Player {
 
   _handleMIDIEvent(midiURL, data, time) {
     // FIXME: work around midievents expecting more than one event.
-    // also 3rd and 7th arguments are placeholder times. should pull req
-    // midievents to make it easier to handle single events, or modify midiplayer.
+    // Also 3rd and 7th arguments are placeholder times. Should pull req
+    // midievents to make it easier to handle single events, or modify
+    // midiplayer.
     data.splice(0, 0, 0, EVENT_META, EVENT_META_TEXT, 0, 0)
     const dataView = new DataView(new Uint8Array(data).buffer)
     const parser = createEventParser(dataView)
@@ -204,7 +205,7 @@ export default class Player {
     ev.midi = {data, time}
 
     if (ev.time <= this.ctx.currentTime) {
-      // skip events in the past (due to seek, etc.)
+      // Skip events in the past (due to seek, etc.)
       return
     }
 

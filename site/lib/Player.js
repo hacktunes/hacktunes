@@ -17,6 +17,9 @@ import {
 import MIDIFile from 'midifile'
 import MIDIPlayer from 'midiplayer'
 
+// Duration tracks fade out when removed (to avoid artifacts from immediate cuts)
+const trackFadeTime = .02
+
 export default class Player {
   constructor(actions) {
     this.ctx = null
@@ -139,9 +142,16 @@ export default class Player {
     if (!trackState) {
       return
     }
-    trackState.gainNode.disconnect()
-    trackState.analyzerNode.disconnect()
-    trackState.spyNode.disconnect()
+    const ctxTime = this.ctx.currentTime
+    const gain = trackState.gainNode.gain
+    gain.cancelScheduledValues(ctxTime)
+    gain.setValueAtTime(gain.value, ctxTime)
+    gain.linearRampToValueAtTime(0, ctxTime + trackFadeTime)
+    setTimeout(() => {
+      trackState.gainNode.disconnect()
+      trackState.analyzerNode.disconnect()
+      trackState.spyNode.disconnect()
+    }, trackFadeTime * 1000 + 100)  // 100ms slack between JS and ctx clocks.
     this.tracks.delete(trackKey)
     return trackState
   }

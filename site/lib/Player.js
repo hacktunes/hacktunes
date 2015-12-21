@@ -105,7 +105,7 @@ export default class Player {
       // Unload disabled tracks after loading MIDI files so that songDuration is
       // calculated with full transport.
       for (let [ trackKey, track ] of tracks) {
-        if (!track.enabled) {
+        if (!isPlaying || !track.enabled) {
           const trackState = this._removeTrack(trackKey)
           for (let [ midiURL, ] of trackState.midis) {
             usedMIDI.set(midiURL, usedMIDI.get(midiURL) - 1)
@@ -234,6 +234,10 @@ export default class Player {
   }
 
   _handleTrackAudio(trackKey, ev) {
+    if (!this.tracks.has(trackKey)) {
+      return
+    }
+
     const sampleCount = 100
     const levels = {}
     const buf = ev.inputBuffer

@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactDOM from 'react-dom'
 import { clockTick } from './actions/clock'
 import * as playerActions from './actions/player'

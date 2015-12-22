@@ -10,7 +10,7 @@ const config = {
   output: {
     filename: 'main.[hash].js',
     path: path.join(__dirname, 'build'),
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
   },
 
   externals: [
@@ -52,7 +52,7 @@ const config = {
         test: /\.mid$|\.wav$|\.mp3$/,
         loader: 'file?name=[path][name].[hash].[ext]',
       },
-    ]
+    ],
   },
 
   plugins: [
@@ -60,7 +60,7 @@ const config = {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       'process.env.GA_ID': JSON.stringify(process.env.GA_ID),
     }),
-    new StaticSiteGeneratorPlugin('main', ['/'], {data: {}}),
+    new StaticSiteGeneratorPlugin('main', ['/']),
   ],
 }
 

@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import path from 'path'
 import fs from 'fs'
 import crypto from 'crypto'
@@ -21,18 +23,18 @@ const metaData = require(path.join(baseDir, 'songs/info.json'))
 metaData.songs = metaData.songs || {}
 
 const songInfos = glob.sync(path.join(baseDir, 'songs', '*/song.json'))
-songInfos.forEach(filename => {
-  const parts = filename.split('/')
-  const songKey = parts[parts.length - 2]
-  const info = require(filename)
-  metaData.songs[songKey] = {info, tracks: {}}
+songInfos.forEach(songFilename => {
+  const songParts = songFilename.split('/')
+  const songKey = songParts[songParts.length - 2]
+  const songInfo = require(songFilename)
+  metaData.songs[songKey] = { songInfo, tracks: {} }
 
   const trackInfos = glob.sync(path.join(baseDir, 'songs', songKey, '*/package.json'))
-  trackInfos.forEach(filename => {
-    const parts = filename.split('/')
-    const trackKey = parts[parts.length - 2]
-    const info = require(filename)
-    const authorEmail = info.author && info.author.email
+  trackInfos.forEach(trackFilename => {
+    const trackParts = trackFilename.split('/')
+    const trackKey = trackParts[trackParts.length - 2]
+    const trackInfo = require(trackFilename)
+    const authorEmail = trackInfo.author && trackInfo.author.email
     if (!authorEmail) {
       return
     }
@@ -45,7 +47,7 @@ songInfos.forEach(filename => {
       https.get(avatarURL, response => response.pipe(avatarFile))
     }
 
-    metaData.songs[songKey].tracks[trackKey] = info
+    metaData.songs[songKey].tracks[trackKey] = trackInfo
   })
 })
 

@@ -1,6 +1,7 @@
 {
   "extends": "airbnb",
   "rules": {
-    "semi": [2, "never"]
+    "semi": [2, "never"],
+    "new-cap": 0  // too many false positives for Immutable factory functions
   }
 }

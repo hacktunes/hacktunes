@@ -1,8 +1,6 @@
 import { loadTrack } from './actions/player'
 
 function _loadTracks(store) {
-  const state = store.getState().player.tracks
-
   const trackRequire = require.context('../songs/', true, /index.js$/)
   trackRequire.keys().forEach(name => {
     const parts = name.split('/')

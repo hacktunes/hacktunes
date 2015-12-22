@@ -66,7 +66,7 @@ class App extends Component {
           </div>
           <div className={classNames('progress', playerState === playbackStates.STOPPED && 'stopped')}>
             <div className="container">
-              <div className="filled" style={{width: songDuration && `${songPercent}%`}} />
+              <div className="filled" style={{ width: songDuration && `${songPercent}%` }} />
               <div className="duration">{msToTimeString(songDuration)}</div>
               <Slider
                 className="slider"
@@ -87,13 +87,13 @@ class App extends Component {
             let avatarScale = 1
             if (trackLevels) {
               const maxLevel = clamp(0, (trackLevels.leftMax + trackLevels.rightMax) / 2, 1)
-              avatarScale = 1 + .35 * maxLevel
+              avatarScale = 1 + 0.35 * maxLevel
             }
             const codeURL = `${repoURL}/blob/master/songs/${songKey}/${trackKey}/`
             return (
               <div key={trackKey} className={classNames('track', !trackEnabled && 'disabled')}>
                 <div className="container">
-                  <div className="avatar" style={{transform: `scale(${avatarScale})`}}>
+                  <div className="avatar" style={{ transform: `scale(${avatarScale})` }}>
                     <img src={avatarRequire('./' + track.author.email + '.png')} alt="" />
                   </div>
                   <div className="track-info">
@@ -113,7 +113,7 @@ class App extends Component {
                   <div className="levels-container">
                     <Levels levels={trackLevels} />
                     <div className="range-slider fader">
-                      <div className="handle" style={{'left': '75%'}} />
+                      <div className="handle" style={{ 'left': '75%' }} />
                     </div>
                   </div>
                 </div>
@@ -143,7 +143,7 @@ class App extends Component {
             <a href={chatURL}>community chat</a>
           </footer>
         </div>
-        <style dangerouslySetInnerHTML={{__html: songStyle}} />
+        <style dangerouslySetInnerHTML={{ __html: songStyle }} />
       </div>
     )
   }
@@ -160,6 +160,7 @@ App.propTypes = {
   seekSliderTime: PropTypes.number,
   grabbing: PropTypes.bool,
   songStyle: PropTypes.string.isRequired,
+  actions: PropTypes.object.isRequired,
 }
 
 function mapStateToProps(state) {
@@ -185,7 +186,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(UIActions, dispatch)
+    actions: bindActionCreators(UIActions, dispatch),
   }
 }
 

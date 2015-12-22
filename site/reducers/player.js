@@ -3,7 +3,7 @@ import {
   INIT_AUDIO_CONTEXT,
   SET_SONG,
   SET_TRACK,
-  LOAD_TRACK_START,
+  FETCH_TRACK_START,
   LOAD_RESOURCE_START,
   LOAD_RESOURCE_SUCCESS,
   LOAD_RESOURCE_FAILURE,
@@ -48,20 +48,20 @@ const ResourceRecord = Immutable.Record({
   type: null,
   data: null,
   loading: false,
-  error: null
+  error: null,
 })
 
-function track(state = TrackRecord(), action) {
+function updateTrack(state = TrackRecord(), action) {
   switch (action.type) {
     case SET_TRACK:
       return state.set('module', action.module)
 
-    case LOAD_TRACK_START:
+    case FETCH_TRACK_START:
       const resources = Immutable.fromJS(action.resources, (k, v) => k ? TrackResourceRecord(v) : v)
       return state.merge({
         fetched: true,
         loading: resources.valueSeq().map(res => res.get('url')).toSet(),
-        resources
+        resources,
       })
 
     case ENABLE_TRACK:
@@ -69,6 +69,9 @@ function track(state = TrackRecord(), action) {
 
     case DISABLE_TRACK:
       return state.set('enabled', false)
+
+    default:
+      return state
   }
 }
 
@@ -84,31 +87,31 @@ export default function player(state = StateRecord(), action) {
       })
 
     case SET_TRACK:
-    case LOAD_TRACK_START:
+    case FETCH_TRACK_START:
     case ENABLE_TRACK:
     case DISABLE_TRACK:
-      const { songKey, trackKey } = action
-      return state.updateIn([ 'tracks', songKey, trackKey ], value => track(value, action))
+      return state.updateIn(['tracks', action.songKey, action.trackKey], value => updateTrack(value, action))
 
     case LOAD_RESOURCE_START:
-      return state.setIn([ 'resources', action.url ], ResourceRecord({
+      return state.setIn(['resources', action.url], ResourceRecord({
         loading: true,
         type: action.resourceType,
       }))
 
     case LOAD_RESOURCE_SUCCESS:
       return state.withMutations(mutState => {
-        mutState.mergeIn([ 'resources', action.url ], {
+        mutState.mergeIn(['resources', action.url], {
           loading: false,
           data: action.data,
         })
 
         let finished = true
-        for (let [songKey, song] of state.tracks) {
-          for (let [trackKey, track] of song) {
+        const removeFromLoading = loading => loading.delete(action.url)
+        for (const [songKey, song] of state.tracks) {
+          for (const [trackKey, track] of song) {
             if (track.loading.has(action.url)) {
-              mutState.updateIn([ 'tracks', songKey, trackKey, 'loading' ], loading => loading.delete(action.url))
-              if (!mutState.getIn([ 'tracks', songKey, trackKey, 'loading' ]).isEmpty()) {
+              mutState.updateIn(['tracks', songKey, trackKey, 'loading'], removeFromLoading)
+              if (!mutState.getIn(['tracks', songKey, trackKey, 'loading']).isEmpty()) {
                 finished = false
               }
             }
@@ -124,7 +127,7 @@ export default function player(state = StateRecord(), action) {
       })
 
     case LOAD_RESOURCE_FAILURE:
-      return state.mergeIn([ 'resources', action.url, 'error' ], {
+      return state.mergeIn(['resources', action.url, 'error'], {
         loading: false,
         error: action.error,
       })
@@ -159,13 +162,12 @@ export default function player(state = StateRecord(), action) {
         return state.merge({
           pauseTime: action.seekTime,
         })
-      } else {
-        return state.merge({
-          state: PLAYING,
-          startTime: performance.now() - action.seekTime,
-          pauseTime: null,
-        })
       }
+      return state.merge({
+        state: PLAYING,
+        startTime: performance.now() - action.seekTime,
+        pauseTime: null,
+      })
 
     case PLAYBACK_FINISH:
       return state.merge({

@@ -8,8 +8,6 @@ import {
 } from 'midievents'
 import {
   PLAYING,
-  PAUSED,
-  STOPPED,
 } from '../constants/playbackStates'
 import {
   MIDI,
@@ -18,7 +16,7 @@ import MIDIFile from 'midifile'
 import MIDIPlayer from 'midiplayer'
 
 // Duration tracks fade out when removed (to avoid artifacts from immediate cuts)
-const trackFadeTime = .02
+const trackFadeTime = 0.02
 
 export default class Player {
   constructor(actions) {
@@ -39,7 +37,7 @@ export default class Player {
     const tracks = state.tracks.get(state.song, Immutable.Map())
 
     // Clean up removed/replaced tracks.
-    for (let [ trackKey, trackState ] of this.tracks) {
+    for (const [trackKey, trackState] of this.tracks) {
       const trackRemoved = !tracks.has(trackKey)
       const trackChanged = trackState.module !== tracks.get(trackKey).module
       if (!isPlaying || didSeek || trackRemoved || trackChanged) {
@@ -49,7 +47,7 @@ export default class Player {
 
     // Create new tracks.
     if (state.loaded) {
-      for (let [ trackKey, track ] of tracks) {
+      for (const [trackKey, track] of tracks) {
         if (!this.tracks.has(trackKey) && track.fetched) {
           this.tracks.set(trackKey, this._createTrack(trackKey, state, track))
         }
@@ -66,23 +64,23 @@ export default class Player {
     }
 
     // Take stock of needed MIDI players.
-    var usedMIDI = new Map()
-    for (let [ trackKey, trackState ] of this.tracks) {
-      for (let [ midiURL, ] of trackState.midis) {
+    const usedMIDI = new Map()
+    for (const [, trackState] of this.tracks) {
+      for (const [midiURL] of trackState.midis) {
         usedMIDI.set(midiURL, (usedMIDI.get(midiURL) || 0) + 1)
       }
     }
 
     // Create new MIDI players.
     let songDuration = 0
-    for (let [ midiURL, ] of usedMIDI) {
+    for (const [midiURL] of usedMIDI) {
       if (!this.midiPlayers.has(midiURL)) {
         const resource = state.resources.get(midiURL)
         if (!resource.data) {
           continue
         }
-        let midiFile = new MIDIFile(resource.data)
-        let midiPlayer = new MIDIPlayer({
+        const midiFile = new MIDIFile(resource.data)
+        const midiPlayer = new MIDIPlayer({
           output: { send: this._handleMIDIEvent.bind(this, midiURL) },
         })
         midiPlayer.load(midiFile)
@@ -104,10 +102,10 @@ export default class Player {
 
       // Unload disabled tracks after loading MIDI files so that songDuration is
       // calculated with full transport.
-      for (let [ trackKey, track ] of tracks) {
+      for (const [trackKey, track] of tracks) {
         if (!isPlaying || !track.enabled) {
           const trackState = this._removeTrack(trackKey)
-          for (let [ midiURL, ] of trackState.midis) {
+          for (const [midiURL] of trackState.midis) {
             usedMIDI.set(midiURL, usedMIDI.get(midiURL) - 1)
           }
         }
@@ -115,7 +113,7 @@ export default class Player {
     }
 
     this.timeOffset = now / 1000 - this.ctx.currentTime
-    for (let [ midiURL, midiPlayer ] of this.midiPlayers) {
+    for (const [midiURL, midiPlayer] of this.midiPlayers) {
       if (usedMIDI.get(midiURL) <= 0) {
         // Remove unused MIDI players.
         midiPlayer.stop()
@@ -140,7 +138,7 @@ export default class Player {
   _removeTrack(trackKey) {
     const trackState = this.tracks.get(trackKey)
     if (!trackState) {
-      return
+      return null
     }
     const ctxTime = this.ctx.currentTime
     const gain = trackState.gainNode.gain
@@ -168,7 +166,7 @@ export default class Player {
     spyNode.connect(gainNode)
     spyNode.connect(analyzerNode)
 
-    let trackState = {
+    const trackState = {
       module: track.module,
       gainNode,
       analyzerNode,
@@ -182,7 +180,7 @@ export default class Player {
           throw new Error('playMIDI requires a resource of type MIDI')
         }
         trackState.midis.set(resource.url, onEvent)
-      }
+      },
     }
 
     const trackResources = track.resources.map(res =>
@@ -212,7 +210,7 @@ export default class Player {
     delete ev.index
     delete ev.delta
     ev.time = time / 1000 - this.timeOffset
-    ev.midi = {data, time}
+    ev.midi = { data, time }
 
     if (ev.time <= this.ctx.currentTime) {
       // Skip events in the past (due to seek, etc.)
@@ -225,7 +223,7 @@ export default class Player {
       ev.frequency = Math.pow(2, (ev.note - 69) / 12) * 440
     }
 
-    for (let [trackKey, track] of this.tracks) {
+    for (const [, track] of this.tracks) {
       const subscription = track.midis.get(midiURL)
       if (subscription) {
         subscription(Object.assign({}, ev))

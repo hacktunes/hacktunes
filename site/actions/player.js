@@ -13,6 +13,73 @@ export function setTrack(songKey, trackKey, module) {
   return { type: types.SET_TRACK, songKey, trackKey, module }
 }
 
+export function loadResourceStart(url, resourceType) {
+  return { type: types.LOAD_RESOURCE_START, url, resourceType }
+}
+
+export function loadResourceSuccess(url, data) {
+  return { type: types.LOAD_RESOURCE_SUCCESS, url, data }
+}
+
+export function loadResourceFailure(url, error) {
+  return { type: types.LOAD_RESOURCE_SUCCESS, url, error }
+}
+
+function fetchResource(url, resourceType, converter) {
+  return (dispatch, getState) => {
+    if (getState().player.resources.getIn([url, 'loading'])) {
+      return
+    }
+    dispatch(loadResourceStart(url, resourceType))
+    fetch(url)
+        .then(response => response.arrayBuffer())
+        .then(converter)
+        .then(result => dispatch(loadResourceSuccess(url, result)))
+        .catch(err => dispatch(loadResourceFailure(url, err)))
+  }
+}
+
+function decodeAudioData(ctx, buffer) {
+  // wrap the callback API in a promise
+  return new Promise((resolve, reject) =>
+    ctx.decodeAudioData(buffer, resolve, reject))
+}
+
+export function fetchTrackStart(songKey, trackKey, resources) {
+  return { type: types.FETCH_TRACK_START, songKey, trackKey, resources }
+}
+
+export function fetchTrack(songKey, trackKey) {
+  return (dispatch, getState) => {
+    const state = getState().player
+    const track = state.tracks.getIn([songKey, trackKey])
+    const env = {
+      loadAudio(url) {
+        dispatch(fetchResource(url, AUDIO, buffer => decodeAudioData(state.ctx, buffer)))
+        return { url, type: AUDIO }
+      },
+
+      loadMIDI(url) {
+        dispatch(fetchResource(url, MIDI))
+        return { url, type: MIDI }
+      },
+    }
+    const resources = track.module.load(env)
+    dispatch(fetchTrackStart(songKey, trackKey, resources))
+  }
+}
+
+export function fetchSong() {
+  return (dispatch, getState) => {
+    const state = getState().player
+    const songKey = state.song
+    const tracks = state.tracks.get(songKey)
+    for (const trackKey of tracks.keys()) {
+      dispatch(fetchTrack(songKey, trackKey))
+    }
+  }
+}
+
 export function loadTrack(songKey, trackKey, module) {
   return (dispatch, getState) => {
     const state = getState().player
@@ -26,73 +93,6 @@ export function loadTrack(songKey, trackKey, module) {
   }
 }
 
-export function fetchSong() {
-  return (dispatch, getState) => {
-    const state = getState().player
-    const songKey = state.song
-    const tracks = state.tracks.get(songKey)
-    for (let trackKey of tracks.keys()) {
-      dispatch(fetchTrack(songKey, trackKey))
-    }
-  }
-}
-
-function decodeAudioData(ctx, buffer) {
-  // wrap the callback API in a promise
-  return new Promise((resolve, reject) =>
-    ctx.decodeAudioData(buffer, resolve, reject))
-}
-
-export function fetchTrack(songKey, trackKey) {
-  return (dispatch, getState) => {
-    const state = getState().player
-    const track = state.tracks.getIn([ songKey, trackKey ])
-    const env = {
-      loadAudio(url) {
-        dispatch(fetchResource(url, AUDIO, buffer => decodeAudioData(state.ctx, buffer)))
-        return { url, type: AUDIO }
-      },
-
-      loadMIDI(url) {
-        dispatch(fetchResource(url, MIDI))
-        return { url, type: MIDI }
-      },
-    }
-    const resources = track.module.load(env)
-    dispatch(loadTrackStart(songKey, trackKey, resources))
-  }
-}
-
-export function loadTrackStart(songKey, trackKey, resources) {
-  return { type: types.LOAD_TRACK_START, songKey, trackKey, resources }
-}
-
-function fetchResource(url, resourceType, converter) {
-  return (dispatch, getState) => {
-    if (getState().player.resources.getIn([ url, 'loading' ])) {
-      return
-    }
-    dispatch(loadResourceStart(url, resourceType))
-    fetch(url)
-        .then(response => response.arrayBuffer())
-        .then(converter)
-        .then(result => dispatch(loadResourceSuccess(url, result)))
-        .catch(err => dispatch(loadResourceFailure(url, err)))
-  }
-}
-
-export function loadResourceStart(url, resourceType) {
-  return { type: types.LOAD_RESOURCE_START, url, resourceType }
-}
-
-export function loadResourceSuccess(url, data) {
-  return { type: types.LOAD_RESOURCE_SUCCESS, url, data }
-}
-
-export function loadResourceFailure(url, error) {
-  return { type: types.LOAD_RESOURCE_SUCCESS, url, error }
-}
-
 export function enableTrack(songKey, trackKey) {
   return { type: types.ENABLE_TRACK, songKey, trackKey }
 }
@@ -103,7 +103,7 @@ export function disableTrack(songKey, trackKey) {
 
 export function toggleTrack(songKey, trackKey) {
   return (dispatch, getState) => {
-    const track = getState().player.tracks.getIn([ songKey, trackKey ])
+    const track = getState().player.tracks.getIn([songKey, trackKey])
     const action = track.enabled ? disableTrack : enableTrack
     dispatch(action(songKey, trackKey))
   }

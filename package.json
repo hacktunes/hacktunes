@@ -4,7 +4,7 @@
   "description": "a generated music collaboration",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint ./index.js site",
+    "lint": "eslint ./*.js ./site ./scripts",
     "update-metadata": "babel-node ./scripts/updateMetadata",
     "build": "npm run update-metadata && NODE_ENV=production webpack -p --progress --bail && test -e build/index.html",
     "dev": "webpack-dev-server --hot --watch-poll --host 0.0.0.0",

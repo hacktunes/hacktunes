@@ -6,11 +6,11 @@ import {
   toggleTrack,
 } from './player'
 
-export function grabSlider(seekTime) {
+export function grabSlider() {
   return { type: types.GRAB_SLIDER }
 }
 
-export function releaseSlider(seekTime) {
+export function releaseSlider() {
   return { type: types.RELEASE_SLIDER }
 }
 

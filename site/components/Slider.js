@@ -9,14 +9,14 @@ export default class Slider extends Component {
     window.addEventListener('resize', this._updateHandle, false)
   }
 
+  componentDidUpdate() {
+    this.updateHandle()
+  }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this._updateHandle, false)
     window.removeEventListener('mousemove', this._handleMouseMove, false)
     window.removeEventListener('mouseup', this._handleMouseUp, false)
-  }
-
-  componentDidUpdate() {
-    this.updateHandle()
   }
 
   handleMouseDown(ev) {
@@ -83,6 +83,7 @@ export default class Slider extends Component {
 }
 
 Slider.propTypes = {
+  value: PropTypes.number,
   onGrab: PropTypes.func,
   onMove: PropTypes.func,
   onRelease: PropTypes.func,

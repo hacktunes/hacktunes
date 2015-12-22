@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 
-export default function Page({title, html, scriptHash, cssName}) {
+export default function Page({ title, html, scriptHash, cssName }) {
   return (
     <html lang="en">
       <head>

@@ -39,7 +39,7 @@ const TrackRecord = Immutable.Record({
 export default function metadata(state = StateRecord(), action) {
   switch (action.type) {
     case SET_METADATA:
-      const metadata = Immutable.fromJS(action.metadata, (k, v) => {
+      const newMetadata = Immutable.fromJS(action.metadata, (k, v) => {
         if (k === 'author') {
           return AuthorRecord(v)
         } else if (k === 'credits') {
@@ -53,7 +53,7 @@ export default function metadata(state = StateRecord(), action) {
         }
         return v
       })
-      return state.mergeDeep(metadata)
+      return state.mergeDeep(newMetadata)
 
     default:
       return state

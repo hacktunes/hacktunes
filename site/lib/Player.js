@@ -137,9 +137,6 @@ export default class Player {
 
   _removeTrack(trackKey) {
     const trackState = this.tracks.get(trackKey)
-    if (!trackState) {
-      return null
-    }
     const ctxTime = this.ctx.currentTime
     const gain = trackState.gainNode.gain
     gain.cancelScheduledValues(ctxTime)

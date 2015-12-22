@@ -6,6 +6,16 @@
 
 set -o errexit -o nounset
 
+if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+  echo "Skipping deploy: pull request."
+  exit 1
+fi
+
+if [ "$TRAVIS_BRANCH" != "master" ]; then
+  echo "Skipping deploy: branch not master."
+  exit 1
+fi
+
 REV=$(git rev-parse --short HEAD)
 
 cd build

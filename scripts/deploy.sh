@@ -18,3 +18,5 @@ echo "hacktun.es" > CNAME
 git add -A .
 git commit -m "Auto-build of ${REV}"
 git push -f "https://${GH_TOKEN}@${GH_REF}" HEAD:gh-pages > /dev/null 2>&1
+
+echo "✔ Deployed successfully."

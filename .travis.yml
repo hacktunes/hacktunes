@@ -9,6 +9,7 @@ cache:
     - meta
 
 script:
+  - npm test
   - NODE_ENV=production npm run build
 
 after_success:

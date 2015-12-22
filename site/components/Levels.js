@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import classNames from 'classnames'
-import { LevelsRecord } from '../constants/recordTypes'
+import { LevelsRecord } from '../reducers/playerMetrics'
 
 function widthPercent(frac) {
   return { 'width': `${100 * frac}%` }
